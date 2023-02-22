@@ -7,14 +7,14 @@ class ApplicationController < ActionController::API
   # before_action :authorized_user # unncoment when ready for auth
 
   # current_user and authorized_user
-  # def current_user
-  #     user = User.find_by(id: session[:user_id])
-  #     user
-  # end  
+  def current_user
+      user = User.find_by(id: session[:user_id])
+      user
+  end  
 
-  # def authorized_user
-  #     render json: {errors: "Not Authorized"}, status: :unauthorized unless current_user
-  # end 
+  def authorized_user
+      render json: {errors: "Not Authorized"}, status: :unauthorized unless current_user
+  end 
 
   # test route
   def hello_world
