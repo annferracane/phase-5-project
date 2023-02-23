@@ -1,18 +1,20 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   resources :contractor_specialties, only: [ :create, :destroy ]
-  resources :contractor_profiles, only: [ :create, :update ]
+  resources :contractor_profiles, only: [ :index, :create, :update ]
+  resources :job_comments, only: [ :index, :create, :destroy ]
   resources :job_labor_categories, only: [ :create, :destroy ]
-  resources :jobs, only: [ :index, :create, :show, :update, :destroy ] do
-    resources :job_comments, only: [ :index, :create, :destroy ]
-  end
+  resources :jobs, only: [ :index, :create, :show, :update, :destroy ]
   resources :labor_categories, only: [ :index ]
   resources :properties, only: [ :index, :create, :show, :update ]
   resources :profiles, only: [ :create, :update ]
   resources :users, only: [ :create, :show ]
   
+
   # Defines the root path route ("/")
   # root "articles#index"
+
+  # route to test your configuration
+  get '/hello', to: 'application#hello_world'
 
   # fallback route
   get '*path',
@@ -23,8 +25,4 @@ Rails.application.routes.draw do
   post '/login', to: 'sessions#create'
   get '/authorized_user', to: 'users#show'
   delete '/logout', to:'sessions#destroy'
-
-  # route to test your configuration
-  get '/hello', to: 'application#hello_world'
-
 end

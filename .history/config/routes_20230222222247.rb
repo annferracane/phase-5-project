@@ -3,9 +3,7 @@ Rails.application.routes.draw do
   resources :contractor_specialties, only: [ :create, :destroy ]
   resources :contractor_profiles, only: [ :create, :update ]
   resources :job_labor_categories, only: [ :create, :destroy ]
-  resources :jobs, only: [ :index, :create, :show, :update, :destroy ] do
-    resources :job_comments, only: [ :index, :create, :destroy ]
-  end
+  resources :jobs, only: [ :index, :create, :show, :update, :destroy ]
   resources :labor_categories, only: [ :index ]
   resources :properties, only: [ :index, :create, :show, :update ]
   resources :profiles, only: [ :create, :update ]

@@ -1,0 +1,2 @@
+class LaborCategoriesController < ApplicationController
+end

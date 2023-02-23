@@ -1,0 +1,3 @@
+class LaborCategory < ApplicationRecord
+    
+end
