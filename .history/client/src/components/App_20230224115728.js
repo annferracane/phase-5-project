@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { UserContext } from "../context/user";
 import Navigation from "./Navigation";
-import Jobs from "./Jobs";
+import Jobs from "./Navigation";
 
 function App() {
   const [errors, setErrors] = useState(null);

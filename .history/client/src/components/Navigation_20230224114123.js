@@ -26,7 +26,7 @@ function Navigation() {
 
   const pages = [
     { name: 'Jobs Needed', link: '/jobs-needed' }, 
-    { name: 'Submit a Job', link: '/submit-a-job' }  
+    { name: 'Submit a Tip', link: '/submit-a-tip' }  
   ];
 
   const handleOpenNavMenu = (event) => {

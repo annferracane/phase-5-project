@@ -3,12 +3,10 @@ import { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { UserContext } from "../context/user";
 import Navigation from "./Navigation";
-import Jobs from "./Jobs";
 
 function App() {
   const [errors, setErrors] = useState(null);
   const [count, setCount] = useState(0);
-  const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
     fetch("/hello")
@@ -18,15 +16,11 @@ function App() {
 
   useEffect(() => {
     fetch("/jobs")
-      .then((res) => res.json())
-      .then((jobs) => setJobs(jobs));
+      .then((r) => r.json())
+      .then((data) => setCount(data.count));
   }, []);
 
   if(errors) return <h1>{errors}</h1>
-
-  if(!jobs) return <h1>No Jobs</h1>
-
-  const jobsArray = jobs.map(job => <p>{job.title}</p>) 
 
   return (
 
@@ -35,9 +29,6 @@ function App() {
         <Navigation />
         <div className="App">
           <Switch>
-            <Route path="/jobs-needed">
-              <Jobs jobs={ jobs }/>
-            </Route>
             <Route path="/">
               <h1>Page Count: {count}</h1>
             </Route>

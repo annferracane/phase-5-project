@@ -5,7 +5,7 @@ class JobsController < ApplicationController
         elsif params[:contractor_profile_id]
             jobs = ContractorProfile.find(params[:contractor_profile_id]).jobs
         else
-            jobs = Job.limit(100)
+            jobs = Job.all
         end
         render json: jobs, status: :ok
     end

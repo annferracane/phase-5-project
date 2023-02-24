@@ -25,8 +25,8 @@ function Navigation() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const pages = [
-    { name: 'Jobs Needed', link: '/jobs-needed' }, 
-    { name: 'Submit a Job', link: '/submit-a-job' }  
+    { name: 'Schools', link: '/schools' }, 
+    { name: 'Submit a Tip', link: '/submit-a-tip' }  
   ];
 
   const handleOpenNavMenu = (event) => {
@@ -186,8 +186,7 @@ function Navigation() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            { settingsMenu }
-            {/* {user ? settingsMenu : loginMenu } */}
+            {user ? settingsMenu : loginMenu }
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"

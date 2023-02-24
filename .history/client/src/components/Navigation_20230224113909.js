@@ -25,8 +25,8 @@ function Navigation() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const pages = [
-    { name: 'Jobs Needed', link: '/jobs-needed' }, 
-    { name: 'Submit a Job', link: '/submit-a-job' }  
+    { name: 'Schools', link: '/schools' }, 
+    { name: 'Submit a Tip', link: '/submit-a-tip' }  
   ];
 
   const handleOpenNavMenu = (event) => {
@@ -157,8 +157,8 @@ function Navigation() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              { navigationMenu }
-              {/* { user ? navigationMenu : null } */}
+            { user ? navigationMenu : null }
+              { user ? navigationMenu : null }
             </Menu>
           </Box>
           <ConstructionIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -181,13 +181,11 @@ function Navigation() {
             CIPS
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            { navigationButtons }
-            {/* { user ? navigationButtons : null } */}
+            { user ? navigationButtons : null }
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            { settingsMenu }
-            {/* {user ? settingsMenu : loginMenu } */}
+            {user ? settingsMenu : loginMenu }
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"

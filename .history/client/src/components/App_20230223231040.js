@@ -3,7 +3,6 @@ import { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { UserContext } from "../context/user";
 import Navigation from "./Navigation";
-import Jobs from "./Jobs";
 
 function App() {
   const [errors, setErrors] = useState(null);
@@ -17,7 +16,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetch("/jobs")
+    fetch("/jobs/1/job_comments")
       .then((res) => res.json())
       .then((jobs) => setJobs(jobs));
   }, []);
@@ -26,7 +25,7 @@ function App() {
 
   if(!jobs) return <h1>No Jobs</h1>
 
-  const jobsArray = jobs.map(job => <p>{job.title}</p>) 
+  const jobsArray = jobs.map(job => console.log(job)) 
 
   return (
 
@@ -35,11 +34,9 @@ function App() {
         <Navigation />
         <div className="App">
           <Switch>
-            <Route path="/jobs-needed">
-              <Jobs jobs={ jobs }/>
-            </Route>
             <Route path="/">
               <h1>Page Count: {count}</h1>
+              {jobsArray}
             </Route>
           </Switch>
         </div>
