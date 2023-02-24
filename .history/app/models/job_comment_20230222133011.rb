@@ -1,2 +1,0 @@
-class JobComment < ApplicationRecord
-end

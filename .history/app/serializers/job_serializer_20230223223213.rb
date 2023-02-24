@@ -5,4 +5,5 @@ class JobSerializer < ActiveModel::Serializer
   has_many :labor_categories
   belongs_to :contractor_profile
   belongs_to :property
+  belongs_to :user
 end

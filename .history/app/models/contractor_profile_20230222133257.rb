@@ -1,2 +1,0 @@
-class ContractorProfile < ApplicationRecord
-end

@@ -1,2 +1,0 @@
-class JobCommentsController < ApplicationController
-end

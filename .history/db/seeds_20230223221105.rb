@@ -145,7 +145,7 @@ property_groups.map { | property_group |
     property_group.map { | property | 
 
         Job.create!(
-            title: [Faker::House.room.capitalize + ' ' + Faker::Lorem.words.to_sentence(words_connector: ' ' , last_word_connector: ' '), Faker::Lorem.words.to_sentence(words_connector: ' ' , last_word_connector: ' ').capitalize + ' ' + Faker::House.room].sample, 
+            title: [Faker::House.room.capitalize + ' ' + Faker::Lorem.words.to_sentence(words_connector: ' ' , last_word_connector: ' '), Faker::Lorem.words.to_sentence(words_connector: ' ' , last_word_connector: ' ').capitalize + ' ' + Faker::House.room.capitalize].sample, 
             description: Faker::Lorem.paragraphs.join(' '),
             timeline: timeline.sample,
             is_accepted: nil,

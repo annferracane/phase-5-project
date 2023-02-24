@@ -1,2 +1,0 @@
-class JobLaborCategory < ApplicationRecord
-end
