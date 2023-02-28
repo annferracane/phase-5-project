@@ -16,7 +16,7 @@ function Jobs({ jobs }) {
     } )
 
     // Show loading if jobs is null
-  if(!jobs) { return <h2>Loading...</h2> }
+   if(!jobs) { return <h2>Loading...</h2> }
 
     return (
         <>
