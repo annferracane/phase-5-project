@@ -13,7 +13,7 @@ import {
 import { Link } from 'react-router-dom';
 import AddJobDialog from './AddJobDialog';
 
-function CustomListItem({ itemType, item }) {
+function CustomListItem({ itemType, item, passedFunction }) {
     const [itemData, setItemData] = useState({
         url: '',
         primaryText: '',
@@ -31,7 +31,7 @@ function CustomListItem({ itemType, item }) {
                 url: `/properties/${item.id}`,
                 primaryText: item.street_address_1 + ' ' + item.street_address_2,
                 secondaryText: item.city + ', ' + item.state,
-                buttonType: <AddJobDialog property={ item }/>,
+                buttonType: <AddJobDialog property={ item } addJobToList={ passedFunction }/>,
                 buttonHref: '/',
                 buttonText: 'See Property'
             });

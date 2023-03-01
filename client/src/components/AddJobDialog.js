@@ -1,7 +1,6 @@
 import * as React from 'react';
 //Consolidate
 import { useState, useContext, useEffect } from "react";
-import { useHistory } from 'react-router-dom';
 import { UserContext } from "../context/user";
 import ActionAlerts from './ActionAlerts';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -18,13 +17,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-export default function AddJobDialog({ property }) {
-    const { user, setUser } = useContext(UserContext); // ?
+import LaborTags from './LaborTags';
+
+function AddJobDialog({ property, addJobToList }) {
+    const { user, setUser } = useContext(UserContext); // resolve this
     const [open, setOpen] = React.useState(false);
     const [severity, setSeverity] = useState();
     const [alertMessages, setAlertMessages] = useState([]);
     const [laborCategories, setLaborCategories] = useState([]);
-    const history = useHistory(); //?
   
     useEffect(() => {
       fetch("/labor_categories")
@@ -39,11 +39,10 @@ export default function AddJobDialog({ property }) {
         title: '',
         description: '',
         timeline: '',
-        labor_category: '',
-        labor_category_id: null
+        labor_categories: []
       });
       
-    const { title, description, timeline, labor_category_id } = formData;
+    const { title, description, timeline, labor_categories} = formData;
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -53,13 +52,23 @@ export default function AddJobDialog({ property }) {
       setOpen(false);
     };
   
+    const deleteLaborTag = (laborTagToDelete) => {
+      const newLaborTags = labor_categories.filter(laborTag => laborTag.id !== laborTagToDelete.id);
+      setFormData({ ...formData, ["labor_categories"]: newLaborTags });
+    }
+
     const handleLaborCategoryChange = (value) => {
-        if(value != null ) {
+      if(value != null ) {
             fetch(`/labor-category-lookup/${value}`)
             .then(res => {
                 if(res.ok){
                     res.json().then(labor_category_id => {
-                        setFormData({ ...formData, ["labor_category_id"]: labor_category_id });
+                        const laborObj = {
+                          id: labor_category_id,
+                          name: value
+                        }
+                        const newLaborTags = [...labor_categories, laborObj];
+                        setFormData({ ...formData, ["labor_categories"]: newLaborTags });
                     })
                 } else {
                     res.json().then(json => console(Object.entries(json.errors)));
@@ -83,10 +92,9 @@ export default function AddJobDialog({ property }) {
         is_accepted: null,
         is_completed: null,
         property_id: property.id,
-        contractor_profile_id: null,
-        labor_category_id: labor_category_id // need to do
+        contractor_profile_id: null
     };
-  
+    
     fetch(`/properties/${property.id}/jobs`, {
       method: 'POST', 
       headers:{'Content-Type': 'application/json'},
@@ -95,20 +103,53 @@ export default function AddJobDialog({ property }) {
     .then(res => {
         if(res.ok){
             res.json().then(job => {
-              setFormData({
+              Promise.all(
+                labor_categories.map(labor_category => {
+                  return new Promise((resolve) => {
+
+                    const jobLaborCategory = {
+                      job_id: job.id,
+                      labor_category_id: labor_category.id
+                    };
+
+                    fetch(`/job_labor_categories`, {
+                      method: 'POST', 
+                      headers:{'Content-Type': 'application/json'},
+                      body:JSON.stringify(jobLaborCategory)
+                    })
+                    .then(res => {
+                      if(res.ok){
+                        return new Promise(() => {
+                          res.json().then(labor_category => {
+                            console.log(labor_category);
+                            resolve();
+                          })
+                        })
+                      } else {
+                        console.log("Error: job labor categories POST")
+                      }
+
+                    })
+                  })
+                })
+              )
+              .then(() => {
+                console.log("Job labor categories added to job.");
+
+                setFormData({
                   title: '',
                   description: '',
                   timeline: '',
                   is_accepted: false,
                   is_completed: false,
-                  labor_category: '',
-                  labor_category_id: null
+                  labor_categories: []
                 });
 
-                // Need to update state of dashboard jobs list if not pushing
-                handleClose();
+                addJobToList(job);
+              })
+              .then(handleClose())
             })
-        }else {
+        } else {
             res.json().then(json => {
               setSeverity("error");
               setAlertMessages(Object.entries(json.errors));
@@ -117,8 +158,8 @@ export default function AddJobDialog({ property }) {
     })
     };
   
-     // Show loading if jobs is null
-   if(!laborCategories) { return <h2>Loading...</h2> }
+  // Show loading if jobs is null
+  if(!laborCategories) { return <h2>Loading...</h2> }
 
   return (
     <div>
@@ -135,6 +176,7 @@ export default function AddJobDialog({ property }) {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Autocomplete
+                  required
                   onChange={(event, value) => handleLaborCategoryChange(value)}
                   id="laborCategoryName"
                   freeSolo
@@ -143,6 +185,7 @@ export default function AddJobDialog({ property }) {
                   renderInput={(params) => <TextField {...params} label="Job Category" />}
               />
             </Grid>
+            { labor_categories ? <Grid item xs={12}><LaborTags laborTags={labor_categories} deleteLaborTag={ deleteLaborTag } /></Grid> : null } 
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <InputLabel id="timeline-label">Timeline</InputLabel>
@@ -194,3 +237,5 @@ export default function AddJobDialog({ property }) {
     </div>
   );
 }
+
+export default AddJobDialog;

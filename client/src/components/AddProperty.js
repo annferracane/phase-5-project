@@ -19,14 +19,14 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
-function AddProperty() {
+function AddProperty({addPropertyToList}) {
     const { user, setUser } = useContext(UserContext);
     const [severity, setSeverity] = useState();
     const [alertMessages, setAlertMessages] = useState([]);
     const theme = createTheme();
     const history = useHistory();
 
-    const stateAbbreviations = ['AL','AK','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
+    const stateAbbreviations = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
     const stateAbbreviationArray = stateAbbreviations.map(stateAbbreviation => <MenuItem key={stateAbbreviation} value={stateAbbreviation}>{stateAbbreviation}</MenuItem>)
     
     const propertyCategories = ['Commercial','Residential'];
@@ -60,7 +60,8 @@ function AddProperty() {
           state: state_abbr,
           zip: zip,
           country: country,
-          property_category: property_category
+          property_category: property_category,
+          user_id: 1 // Need to fix with user context
       };
     
       fetch(`/properties`,{
@@ -80,7 +81,8 @@ function AddProperty() {
                     country: '',
                     property_category: ''
                   });
-                  history.push(`/properties/${property.id}`); // revisit
+                  //history.push(`/properties/${property.id}`); // revisit
+                  addPropertyToList(property);
               })
           }else {
               res.json().then(json => {
@@ -111,7 +113,7 @@ function AddProperty() {
                                 <Select
                                     labelId="property-category-label"
                                     id="property-category"
-                                    name="property-category"
+                                    name="property_category"
                                     label="Category"
                                     value={ property_category }
                                     onChange={ handleChange }
@@ -126,7 +128,7 @@ function AddProperty() {
                             fullWidth
                             id="street-address-1"
                             label="Street Address"
-                            name="street-address-1"
+                            name="street_address_1"
                             autoComplete="street-address-1"
                             value={ street_address_1 }
                             onChange={ handleChange }
@@ -137,7 +139,7 @@ function AddProperty() {
                             fullWidth
                             id="street-address-2"
                             label="Apt / Unit / Suite"
-                            name="street-address-2"
+                            name="street_address_2"
                             autoComplete="street-address-2"
                             value={ street_address_2 }
                             onChange={ handleChange }
@@ -161,8 +163,8 @@ function AddProperty() {
                                 <Select
                                     labelId="state-label"
                                     id="state"
-                                    name="state"
-                                    label="Srate"
+                                    name="state_abbr"
+                                    label="State"
                                     value={ state_abbr }
                                     onChange={ handleChange }
                                 >   

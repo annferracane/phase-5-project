@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Properties from './Properties';
 import JobList from './JobList';
 
-function Dashboard({ userJobs, properties, laborCategories }) {
+function Dashboard({ userJobs, properties, addPropertyToList, addJobToList }) {
 
     const ctaFirst = ['Add a Property','/add-a-property'];
 
@@ -20,7 +20,7 @@ function Dashboard({ userJobs, properties, laborCategories }) {
                         <Grid item xs={12}>
                             <Card sx={{ flex: 1 }}>
                                 <CardHeader title={ "Add a Property" } />
-                                <AddProperty />
+                                <AddProperty addPropertyToList={addPropertyToList}/>
                             </Card>
                         </Grid>
                     </Grid>
@@ -30,7 +30,7 @@ function Dashboard({ userJobs, properties, laborCategories }) {
                                 <Card sx={{ flex: 1 }}>
                                     <CardHeader title={ "Properties" } />
                                     <List dense={ true }>
-                                        <Properties properties={ properties } />
+                                        <Properties properties={ properties } addJobToList={addJobToList} />
                                     </List>
                                 </Card>
                             </Grid>

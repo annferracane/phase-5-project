@@ -9,12 +9,12 @@ class PropertiesController < ApplicationController
         render json: property, status: :ok
     end
 
-    def create(property_params)
+    def create
         property = Property.create!(property_params)
         render json: property, status: :created
     end
 
-    def update(property_params)
+    def update
         property = Property.find(params[:id])
         property.update!(property_params)
         render json: property, status: :accepted

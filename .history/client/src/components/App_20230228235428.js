@@ -30,13 +30,13 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetch("/users/4000/properties")
+    fetch("/users//properties")
       .then((res) => res.json())
       .then((properties) => setProperties(properties));
   }, []);
 
   useEffect(() => {
-    fetch("/users/4000/jobs")
+    fetch("/users/2/jobs")
       .then((res) => res.json())
       .then((userJobs) => setUserJobs(userJobs));
   }, []);

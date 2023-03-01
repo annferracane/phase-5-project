@@ -4,6 +4,8 @@ class JobsController < ApplicationController
             jobs = Property.find(params[:property_id]).jobs
         elsif params[:contractor_profile_id]
             jobs = ContractorProfile.find(params[:contractor_profile_id]).jobs
+        elsif params[:user_id]
+            jobs = User.find(params[:user_id]).jobs
         else
             jobs = Job.limit(100)
         end

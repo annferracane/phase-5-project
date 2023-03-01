@@ -1,7 +1,8 @@
 class JobLaborCategoriesController < ApplicationController
-    def create(job_labor_category_params)
-        JobLaborCategory.create!(job_labor_category_params)
-        labor_category = LaborCategory.find(params[:labor_category_id])
+
+    def create
+        job_labor_category = JobLaborCategory.create!(job_labor_category_params)
+        labor_category = LaborCategory.find(job_labor_category.labor_category_id)
         render json: labor_category, status: :created
     end
 

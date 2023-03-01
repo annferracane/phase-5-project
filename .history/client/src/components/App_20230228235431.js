@@ -36,7 +36,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetch("/users/4000/jobs")
+    fetch("/users/2/jobs")
       .then((res) => res.json())
       .then((userJobs) => setUserJobs(userJobs));
   }, []);
