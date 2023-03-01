@@ -6,6 +6,8 @@ import Navigation from "./Navigation";
 import SubmitJob from "./SubmitJob";
 import Jobs from "./Jobs";
 import Dashboard from "./Dashboard";
+import PropertyDetail from "./PropertyDetail";
+import JobDetail from "./JobDetail";
 
 function App() {
   const [errors, setErrors] = useState(null);
@@ -30,13 +32,13 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetch("/users/4000/properties")
+    fetch("/users/2/properties")
       .then((res) => res.json())
       .then((properties) => setProperties(properties));
   }, []);
 
   useEffect(() => {
-    fetch("/users/4000/jobs")
+    fetch("/users/2/jobs")
       .then((res) => res.json())
       .then((userJobs) => setUserJobs(userJobs));
   }, []);
@@ -64,11 +66,17 @@ function App() {
         <Navigation />
         <div className="App">
           <Switch>
+            <Route path="/job/:id">
+              <JobDetail />
+            </Route>
             <Route path="/jobs-needed">
               <Jobs jobs={ jobs }/>
             </Route>
             <Route path="/dashboard">
               <Dashboard properties={ properties } userJobs={ userJobs } addPropertyToList={ addPropertyToList } addJobToList={ addJobToList } />
+            </Route>
+            <Route path="/property/:id">
+              <PropertyDetail />
             </Route>
             <Route path="/submit-a-job">
               <SubmitJob laborCategories={ laborCategories }/>

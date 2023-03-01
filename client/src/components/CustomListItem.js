@@ -8,7 +8,7 @@ import {
     Avatar,
     Box,
     Button,
-    Stack,
+    Stack
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import AddJobDialog from './AddJobDialog';
@@ -28,20 +28,20 @@ function CustomListItem({ itemType, item, passedFunction }) {
     useEffect(() => {
         if (itemType === 'property') {
             setItemData({
-                url: `/properties/${item.id}`,
+                url: `/property/${item.id}`,
                 primaryText: item.street_address_1 + ' ' + item.street_address_2,
                 secondaryText: item.city + ', ' + item.state,
                 buttonType: <AddJobDialog property={ item } addJobToList={ passedFunction }/>,
-                buttonHref: '/',
+                buttonHref: `/property/${item.id}`,
                 buttonText: 'See Property'
             });
         } else if (itemType === 'job') {
             setItemData({
-                url: `/jobs/${item.id}`,
+                url: `/job/${item.id}`,
                 primaryText: item.title,
                 secondaryText: item.timeline,
                 buttonType: null,
-                buttonHref: '/',
+                buttonHref: `/job/${item.id}`,
                 buttonText: 'See Job'
             });
         }

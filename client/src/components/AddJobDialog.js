@@ -144,10 +144,9 @@ function AddJobDialog({ property, addJobToList }) {
                   is_completed: false,
                   labor_categories: []
                 });
-
-                addJobToList(job);
+                handleClose();
               })
-              .then(handleClose())
+              .then(addJobToList(job))
             })
         } else {
             res.json().then(json => {

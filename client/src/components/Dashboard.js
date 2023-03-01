@@ -18,8 +18,8 @@ function Dashboard({ userJobs, properties, addPropertyToList, addJobToList }) {
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={5} lg={5} > 
                         <Grid item xs={12}>
+                            <CardHeader title={ "Add a Property" } />
                             <Card sx={{ flex: 1 }}>
-                                <CardHeader title={ "Add a Property" } />
                                 <AddProperty addPropertyToList={addPropertyToList}/>
                             </Card>
                         </Grid>
@@ -27,16 +27,16 @@ function Dashboard({ userJobs, properties, addPropertyToList, addJobToList }) {
                     <Grid item xs={12} md={7} lg={7} > 
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
+                                <CardHeader title={ "Properties" } />
                                 <Card sx={{ flex: 1 }}>
-                                    <CardHeader title={ "Properties" } />
                                     <List dense={ true }>
                                         <Properties properties={ properties } addJobToList={addJobToList} />
                                     </List>
                                 </Card>
                             </Grid>
                             <Grid item xs={12}>
+                                <CardHeader title={ "Jobs" } />
                                 <Card sx={{ flex: 1 }}>
-                                    <CardHeader title={ "Jobs" } />
                                     <List dense={ true }>
                                         <JobList jobs={ userJobs } />
                                     </List>

@@ -106,7 +106,6 @@ function SubmitJob({ laborCategories }) {
       })
       };
 
-
     return (
         <>
             <Hero title="Submit a Job" summary="Submit a job! Get it done." ctaFirst={ ctaFirst }/>

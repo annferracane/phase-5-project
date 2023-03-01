@@ -8,7 +8,9 @@ function LaborTags({ laborTags, deleteLaborTag }) {
         deleteLaborTag(laborTag);
     };
 
-    const laborTagArray = laborTags.map(laborTag => <Chip key={laborTag.name} label={laborTag.name} color="primary" variant="outlined" onDelete={() => handleDelete(laborTag)} />);
+    let laborTagArray;
+    { deleteLaborTag ? laborTagArray = laborTags.map(laborTag => <Chip key={laborTag.name} label={laborTag.name} color="primary" variant="outlined" onDelete={() => handleDelete(laborTag)} />) : laborTagArray = laborTags.map(laborTag => <Chip key={laborTag.name} label={laborTag.name} color="primary" variant="filled" />) }
+
 
     return (
         <Stack direction="row" spacing={1}>
