@@ -1,5 +1,6 @@
-import * as React from 'react';
+import { useContext } from "react";
 import { Card, CardHeader, List } from '@mui/material';
+import { UserContext } from "../context/user";
 import AddProperty from "./AddProperty";
 import Hero from './Hero';
 import Container from '@mui/material/Container';
@@ -7,13 +8,35 @@ import Grid from '@mui/material/Grid';
 import Properties from './Properties';
 import JobList from './JobList';
 
-function Dashboard({ userJobs, properties, addPropertyToList, addJobToList }) {
+function Dashboard({ profile, userJobs, properties, addPropertyToList, addJob, deleteJob, editJob }) {
+    const { user } = useContext(UserContext);
 
-    const ctaFirst = ['Add a Property','/add-a-property'];
+    const ctaFirst = ['Update Profile','/my-profile'];
+
+    const propertiesContent = ( 
+        <Grid item xs={12}>
+            <CardHeader title={ "Properties" } />
+            <List dense={ true }>
+                <Properties properties={ properties } addJob={addJob} />
+            </List>
+        </Grid>
+    );
+
+    const jobsContent = ( 
+        <Grid item xs={12}>
+            <CardHeader title={ "Active Jobs" } />
+            <List dense={ true }>
+                <JobList jobs={ userJobs } deleteJob={ deleteJob } editJob={ editJob }/>
+            </List>
+        </Grid>
+    );
+
+    if(!user) { return <h2>Loading...</h2> }
+
 
     return (
         <>
-            <Hero title="My Dashboard" summary="This is my dashboard!" ctaFirst={ ctaFirst }/>
+            <Hero title={profile ? `${profile.first_name}'s JINDAH` : 'My JINDAH'} summary="Add properties and jobs to be done!" ctaFirst={ ctaFirst }/>
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={5} lg={5} > 
@@ -26,22 +49,8 @@ function Dashboard({ userJobs, properties, addPropertyToList, addJobToList }) {
                     </Grid>
                     <Grid item xs={12} md={7} lg={7} > 
                         <Grid container spacing={3}>
-                            <Grid item xs={12}>
-                                <CardHeader title={ "Properties" } />
-                                <Card sx={{ flex: 1 }}>
-                                    <List dense={ true }>
-                                        <Properties properties={ properties } addJobToList={addJobToList} />
-                                    </List>
-                                </Card>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <CardHeader title={ "Jobs" } />
-                                <Card sx={{ flex: 1 }}>
-                                    <List dense={ true }>
-                                        <JobList jobs={ userJobs } />
-                                    </List>
-                                </Card>
-                            </Grid>
+                            { properties.length > 0 ? propertiesContent : null }
+                            { userJobs.length > 0 ? jobsContent : null }
                         </Grid>
                     </Grid>
                 </Grid>

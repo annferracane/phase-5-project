@@ -22,8 +22,8 @@ puts "Seeding labor categories..."
 labor_categories = [
 'Carpet Cleaning',
 'Electrical',
-'General Contracting / Remodeling',
-'Gutter Cleaning / Repair',
+'General Contracting & Renovations',
+'Gutter Cleaning & Repair',
 'Handyperson',
 'HVAC',
 'Landscaping',
@@ -41,7 +41,7 @@ labor_categories.map { | labor_category | LaborCategory.create!(name: labor_cate
 # Users & Profiles
 puts "Seeding users and profiles..."
 
-1000.times do
+100.times do
     fake_user = {
         "first_name" => Faker::Name.first_name_neutral,
         "last_name" => Faker::Name.last_name,
@@ -67,7 +67,7 @@ end
 # Contractor Profile
 puts "Seeding contractor profiles..."
 
-250.times do
+25.times do
     ContractorProfile.create!(
         zip: Faker::Address.zip_code, 
         travel_radius_miles: rand(10..300),
@@ -99,8 +99,8 @@ end
 puts "Seeding properties..."
 
 users = User.all
-users_limited = User.limit(500)
-users_limited_small = User.limit(250)
+users_limited = User.limit(50)
+users_limited_small = User.limit(25)
 
 user_groups = [users, users_limited, users_limited_small]
 
@@ -112,7 +112,7 @@ user_groups.map { | user_group |
             street_address_1: Faker::Address.street_address, 
             street_address_2: [nil, Faker::Address.secondary_address].sample,
             city: Faker::Address.city,
-            state: Faker::Address.state,
+            state: Faker::Address.state_abbr,
             zip: Faker::Address.zip,
             country: 'United States',
             property_category: ['Commercial', 'Residential'].sample,
@@ -135,8 +135,8 @@ timeline = [
     ]
 
 properties = Property.all
-properties_limited = Property.limit(875)
-properties_limited_small = Property.limit(450)
+properties_limited = Property.limit(85)
+properties_limited_small = Property.limit(40)
 
 property_groups = [properties, properties_limited, properties_limited_small]
 
@@ -148,8 +148,8 @@ property_groups.map { | property_group |
             title: [Faker::House.room.capitalize + ' ' + Faker::Lorem.words.to_sentence(words_connector: ' ' , last_word_connector: ' '), Faker::Lorem.words.to_sentence(words_connector: ' ' , last_word_connector: ' ').capitalize + ' ' + Faker::House.room].sample, 
             description: Faker::Lorem.paragraphs.join(' '),
             timeline: timeline.sample,
-            is_accepted: nil,
-            is_completed: nil,
+            is_accepted: false,
+            is_completed: false,
             property_id: property.id,
             contractor_profile_id: [ContractorProfile.all.sample.id, nil].sample
         )
@@ -160,7 +160,7 @@ jobs = Job.where.not(contractor_profile_id: nil)
 
 jobs.map { | job |
     job.update!(is_accepted: true)
-    job.update!(is_completed: [nil, true].sample)
+    job.update!(is_completed: [false, true].sample)
 }
 
 
@@ -189,7 +189,7 @@ jobs.map { | job |
 # Job Comments
 puts "Seeding job comments..."
 
-jobs = Job.limit(1000)
+jobs = Job.limit(100)
 
 2.times do
 

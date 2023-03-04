@@ -3,14 +3,17 @@ import { useState, useContext } from "react";
 import { UserContext } from "../context/user";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import Avatar from '@mui/material/Avatar';
 import ActionAlerts from './ActionAlerts';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
 
-function AddComment({ job }) {
+function AddComment({ job, addJobComment }) {
     const { user, setUser } = useContext(UserContext);
     const [severity, setSeverity] = useState();
     const [alertMessages, setAlertMessages] = useState([]);
@@ -47,7 +50,8 @@ function AddComment({ job }) {
                 setFormData({
                     comment_text: ''
                   });
-                  // add comment to client
+                  // add job comment to client
+                  addJobComment(comment);
               })
           } else {
               res.json().then(json => {
@@ -61,48 +65,41 @@ function AddComment({ job }) {
 
 
     return (
-        <>
-            <ThemeProvider theme={theme}>
-                <Container component="main" maxWidth="xs">
-                    <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                    >
-                    <ActionAlerts messages={alertMessages} severity={severity}/>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <TextField
-                                required
-                                fullWidth
-                                id="comment"
-                                label="Comment"
-                                name="comment_text"
-                                autoComplete="comment"
-                                value={ comment_text }
-                                onChange={ handleChange }
-                                />
-                            </Grid>
-                        </Grid>
+        <Card>
+            <Box component="form" noValidate onSubmit={ handleSubmit } sx={{ p: "15px" }}> 
+                <Grid container spacing={3}>
+                    <Grid item xs>
+                        <Avatar />
+                    </Grid>
+                    <Grid item xs={9}>
+                        <TextField
+                            multiline
+                            minRows={3}
+                            placeholder="Add a comment"
+                            required
+                            fullWidth
+                            id="comment"
+                            label="Comment"
+                            name="comment_text"
+                            autoComplete="comment"
+                            value={ comment_text }
+                            onChange={ handleChange }
+                        />
+                    </Grid>
+                    <Grid item xs>
                         <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
                         >
-                        Add Comment
+                            Post
                         </Button>
-                    </Box>
-                    </Box>
-                </Container>
-            </ThemeProvider>
-        </>
-
+                    </Grid>
+                </Grid>
+            </Box>
+        </Card>
     )
-
 }
 
 export default AddComment;

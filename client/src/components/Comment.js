@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { useState, useContext, useEffect } from "react";
+import { useContext } from "react";
 import {
+    Card,
     ListItem,
     ListItemSecondaryAction,
     ListItemAvatar,
@@ -8,21 +9,42 @@ import {
     Avatar,
     Box,
     Button,
-    Stack,
-    Divider
+    Stack
 } from '@mui/material';
-import { Link } from 'react-router-dom';
 
-function Comment( { comment }) {
+function Comment( { comment, deleteJobComment }) {
+
+    const handleDelete = () => {
+        fetch(`/users/1/job_comments/${comment.id}`,{ // fix dynamic user
+            method: 'DELETE',
+            headers:{'Content-Type': 'application/json'}
+          })
+          .then(res => {
+              if(res.ok){
+                deleteJobComment(comment.id);
+              } else {
+                res.json().then(json => {
+                  console.log(json.errors);
+                });
+              }
+          })
+    }
+
+    const deleteButton = (
+        <Button variant="contained" onClick={ handleDelete }>Delete</Button>
+    );
 
     // Show loading if comment is null
    if(!comment) { return <h3>Loading...</h3> }
 
     return (
-        <>
-            {/* <ListItem component={Link} to={ url }> */}
+        <Card
+            sx={{
+                minHeight: 60
+            }}
+        >
             <ListItem>
-                <ListItemAvatar>
+                <ListItemAvatar style={{display:'flex', justifyContent:'center'}}>
                     <Avatar />
                 </ListItemAvatar>
                 <ListItemText
@@ -36,20 +58,13 @@ function Comment( { comment }) {
                             color: 'text.primary',
                         }}
                     >   
-                        <Stack
-                        sx={{ pt: 4 }}
-                        direction="row"
-                        spacing={2}
-                        justifyContent="center"
-                        >
-                            {/* { buttonType }
-                            <Button variant="contained" href={ buttonHref }>{ buttonText }</Button> */}
-                        </Stack>
+                        
+                        { deleteButton }
+                        
                     </Box>
                 </ListItemSecondaryAction>
             </ListItem>
-            <Divider />
-        </>
+            </Card>
     );
 };
 

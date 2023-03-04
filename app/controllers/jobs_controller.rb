@@ -1,14 +1,21 @@
 class JobsController < ApplicationController
+    skip_before_action :authorized_user, only: [:sample_job_index, :show]
+
     def index
         if params[:property_id]
-            jobs = Property.find(params[:property_id]).jobs
+            jobs = Property.find(params[:property_id]).jobs.order(created_at: :asc)
         elsif params[:contractor_profile_id]
-            jobs = ContractorProfile.find(params[:contractor_profile_id]).jobs
+            jobs = ContractorProfile.find(params[:contractor_profile_id]).jobs.order(created_at: :asc)
         elsif params[:user_id]
-            jobs = User.find(params[:user_id]).jobs
+            jobs = User.find(params[:user_id]).jobs.order(created_at: :asc)
         else
-            jobs = Job.limit(100)
+            jobs = Job.where(is_accepted: false, is_completed: false).order(created_at: :desc).limit(30)
         end
+        render json: jobs, status: :ok
+    end
+
+    def sample_job_index
+        jobs = Job.where(is_accepted: false, is_completed: false).order(created_at: :desc).limit(10)
         render json: jobs, status: :ok
     end
 
@@ -35,7 +42,7 @@ class JobsController < ApplicationController
     end
 
     def destroy
-        job = job.find(params[:id])
+        job = Job.find(params[:id])
         job.destroy
         head :no_content
     end

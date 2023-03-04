@@ -33,7 +33,7 @@ export default function Hero({ title, summary, ctaFirst, ctaSecond}) {
               spacing={2}
               justifyContent="center"
             >
-              <Button variant="contained" href={ ctaFirst[1] }>{ ctaFirst[0] }</Button>
+              { ctaFirst ? <Button variant="contained" href={ ctaFirst[1] }>{ ctaFirst[0] }</Button> : null } 
               { ctaSecond ? <Button variant="outlined" href={ ctaSecond[1] }>{ ctaSecond[0] }</Button> : null }
             </Stack>
           </Container>

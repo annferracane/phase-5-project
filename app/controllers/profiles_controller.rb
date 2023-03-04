@@ -12,6 +12,12 @@ class ProfilesController < ApplicationController
         render json: user, status: :accepted
     end
 
+    def index
+        user = User.find(params[:user_id])
+        profile = user.profile
+        render json: profile, status: :ok
+    end
+
     private
 
     def profile_params

@@ -10,17 +10,17 @@ import cartoucheDark from './cartoucheDark.png';
 function PropertyCard({ icon, title, subtitle_one, subtitle_two, to, children }){
     return (
         <Card
-        sx={{
-            minHeight: 52,
-            display: 'flex',
-            flexDirection: 'column',
-            flex: '1',
-            '& a': {
-                textDecoration: 'none',
-                color: 'inherit',
-            },
-        }}
-    >
+            sx={{
+                minHeight: 52,
+                display: 'flex',
+                flexDirection: 'column',
+                flex: '1',
+                '& a': {
+                    textDecoration: 'none',
+                    color: 'inherit',
+                },
+            }}
+         >
         <Link to={to}>
             <Box
                 sx={{

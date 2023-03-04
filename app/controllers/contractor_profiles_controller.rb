@@ -1,6 +1,6 @@
 class ContractorProfilesController < ApplicationController
     def create
-        ContractorProfile.create!(contractor_profile_params)
+        contractor_profile = ContractorProfile.create!(contractor_profile_params)
         user = User.find(params[:user_id])
         render json: user, status: :created
     end

@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useContext } from 'react';
+import { useState, useContext } from 'react';
 import { UserContext } from "../context/user";
 import { useHistory } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
@@ -16,18 +15,35 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import LoginIcon from '@mui/icons-material/Login';
+import AddContractorProfile from './AddContractorProfile';
 
-function Navigation() {
+function Navigation({ contractorProfile, updateContractorProfile }) {
   const { user, setUser } = useContext(UserContext);
   const history = useHistory();
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const pages = [
-    { name: 'Jobs Needed', link: '/jobs-needed' }, 
-    { name: 'Submit a Job', link: '/submit-a-job' }  
+  const loggedOutPages = [
+    { name: 'All Jobs Needed', link: '/jobs-needed' }
   ];
+
+  const loggedInPages = [ ...loggedOutPages, 
+    { name: 'Submit a Job', link: '/dashboard' },  
+    { name: 'My JINDAH', link: '/dashboard' }
+  ];
+
+  const contractorLoggedInPages = [ ...loggedInPages, 
+    { name: 'Contractor Dashboard', link: '/contractor-dashboard' }
+  ];
+
+  let pages = [];
+  if(contractorProfile) {
+    pages = contractorLoggedInPages;
+  } else if(user) {
+    pages = loggedInPages;
+  } else {
+    pages = loggedOutPages;
+  }
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -46,21 +62,30 @@ function Navigation() {
 
   const handleProfileClick = () => {
     handleCloseUserMenu();
-    history.push('/profile');
+    history.push('/my-profile');
+  }
+
+  const handleDashboardClick = () => {
+    handleCloseUserMenu();
+    history.push('/dashboard');
+  }
+
+  const handleBecomeContractorClick = () => {
+    handleCloseUserMenu();
+    history.push('/become-a-contractor');
   }
 
   const handleLogOut = () => {
     handleCloseUserMenu();
-    // DELETE `/logout`
     fetch('/logout',{
       method:'DELETE'
     })
     .then(res =>{
       if(res.ok) {
         setUser(null);
-        history.push('/login');
       }
     })
+    .then(history.push('/login'));
   }
   
   const loginMenu = (
@@ -69,17 +94,19 @@ function Navigation() {
     </IconButton>
   );
 
+
   let avatarSrc = "";
   if(user) {
+    avatarSrc = <Avatar alt={ "" } src={ "" } />
     if(user.profile) {
-      avatarSrc = user.profile.image;
+      avatarSrc = <Avatar alt={ user.profile.full_name } src={ user.profile.image } />
     }
   }
 
   const settingsMenu = (
     <Tooltip title="Open settings">
       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-        <Avatar alt={ avatarSrc } src={ avatarSrc } />
+        { avatarSrc }
       </IconButton>
     </Tooltip>
   );
@@ -91,6 +118,10 @@ function Navigation() {
       </MenuItem>
     ))
   );
+
+  const becomeAContractorNavItems = (
+    <AddContractorProfile updateContractorProfile={ updateContractorProfile }/>
+  )
 
   const navigationButtons = (
     pages.map((page) => (
@@ -158,7 +189,6 @@ function Navigation() {
               }}
             >
               { navigationMenu }
-              {/* { user ? navigationMenu : null } */}
             </Menu>
           </Box>
           <ConstructionIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -178,16 +208,14 @@ function Navigation() {
               textDecoration: 'none',
             }}
           >
-            CIPS
+            JINDAH
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             { navigationButtons }
-            {/* { user ? navigationButtons : null } */}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            { settingsMenu }
-            {/* {user ? settingsMenu : loginMenu } */}
+            {user ? settingsMenu : loginMenu }
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
@@ -207,6 +235,10 @@ function Navigation() {
               <MenuItem onClick={handleProfileClick}>
                 <Typography textAlign="center">My Profile</Typography>
               </MenuItem>
+              <MenuItem onClick={handleDashboardClick}>
+                <Typography textAlign="center">My Dashboard</Typography>
+              </MenuItem>
+              { contractorProfile ? null : becomeAContractorNavItems }
               <MenuItem onClick={handleLogOut}>
                 <Typography textAlign="center">Logout</Typography>
               </MenuItem>

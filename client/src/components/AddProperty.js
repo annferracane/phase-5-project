@@ -1,18 +1,12 @@
-import * as React from 'react';
 import { useState, useContext } from "react";
-import { useHistory } from 'react-router-dom';
-import { useParams } from "react-router-dom"
 import { UserContext } from "../context/user";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import ActionAlerts from './ActionAlerts';
-// import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-// import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
-// import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -20,11 +14,10 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
 function AddProperty({addPropertyToList}) {
-    const { user, setUser } = useContext(UserContext);
+    const { user } = useContext(UserContext);
     const [severity, setSeverity] = useState();
     const [alertMessages, setAlertMessages] = useState([]);
     const theme = createTheme();
-    const history = useHistory();
 
     const stateAbbreviations = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
     const stateAbbreviationArray = stateAbbreviations.map(stateAbbreviation => <MenuItem key={stateAbbreviation} value={stateAbbreviation}>{stateAbbreviation}</MenuItem>)
@@ -61,7 +54,7 @@ function AddProperty({addPropertyToList}) {
           zip: zip,
           country: country,
           property_category: property_category,
-          user_id: 1 // Need to fix with user context
+          user_id: user.id
       };
     
       fetch(`/properties`,{
@@ -81,7 +74,6 @@ function AddProperty({addPropertyToList}) {
                     country: '',
                     property_category: ''
                   });
-                  //history.push(`/properties/${property.id}`); // revisit
                   addPropertyToList(property);
               })
           }else {

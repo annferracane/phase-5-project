@@ -1,18 +1,32 @@
 import * as React from 'react';
-import { List } from '@mui/material';
+import { useState, useContext } from "react";
+import { Accordion, AccordionSummary, AccordionDetails, List, Stack, Typography  } from '@mui/material';
 import Comment from "./Comment";
 
-function CommentList({ comments }) {
 
-    const commentArray = comments.map(comment => <Comment key={`comment-${comment.id}`} comment={comment} />)
+function CommentList({ comments, deleteJobComment }) {
+    const [expanded, setExpanded] = useState('comment-panel');
 
-    // Show loading if jobs is null
-   if(!comments) { return <h2>Loading...</h2> }
+    const handleChange = (panel) => (event, newExpanded) => {
+        setExpanded(newExpanded ? panel : false);
+    };
+
+   const commentArray = comments.map(comment => <Comment key={`comment-${comment.id}`} comment={comment} deleteJobComment={ deleteJobComment } /> )
 
     return (
-        <List dense={ true }>
-            { commentArray }
-        </List>
+        <Accordion expanded={expanded === 'comment-panel'} onChange={handleChange('comment-panel')}>
+        <AccordionSummary aria-controls="comment-paneld-content" id="comment-paneld-header">
+          <Typography>See Comments</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+            <List dense={ true } >
+                <Stack spacing={ 3 }>
+                    { commentArray }
+                </Stack>
+            </List>
+        </AccordionDetails>
+      </Accordion>
+        
     )
 
 };

@@ -1,6 +1,7 @@
 //Consolidate
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../context/user";
+import { useHistory } from 'react-router-dom';
 import ActionAlerts from './ActionAlerts';
 import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
@@ -13,18 +14,19 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import Grid from '@mui/material/Grid';
 import DialogTitle from '@mui/material/DialogTitle';
+import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 import LaborTags from './LaborTags';
 
-function AddJobDialog({ property, addJob }) {
+function AddContractorProfile({ updateContractorProfile }) {
     const { user } = useContext(UserContext); 
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState();
     const [alertMessages, setAlertMessages] = useState([]);
     const [laborCategories, setLaborCategories] = useState([]);
+    const history = useHistory();
   
     useEffect(() => {
       fetch("/labor_categories")
@@ -32,17 +34,16 @@ function AddJobDialog({ property, addJob }) {
         .then((labor_categories) => setLaborCategories(labor_categories));
     }, []);
 
-    const timelines = ['ASAP', 'Within the week', 'Within the month', 'Within 3 months', 'Within 6 months', 'Seeking Input / Not Urgent'];
-    const timelineArray = timelines.map(timeline => <MenuItem key={timeline} value={timeline}>{timeline}</MenuItem>)
+    const distances = [10, 25, 50, 100, 250, 300, 500];
+    const distanceArray = distances.map(distance => <MenuItem key={`distance-${distance}`} value={`${distance}`}>{ distance }</MenuItem>)
 
     const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        timeline: '',
+        zip: '',
+        travel_radius_miles: '',
         labor_categories: []
       });
       
-    const { title, description, timeline, labor_categories} = formData;
+    const { zip, travel_radius_miles, labor_categories} = formData;
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -85,37 +86,33 @@ function AddJobDialog({ property, addJob }) {
   const handleSubmit = (e) => {
       e.preventDefault();
       
-      const job = {
-        title: title,
-        description: description,
-        timeline: timeline,
-        is_accepted: false,
-        is_completed: false,
-        property_id: property.id,
-        contractor_profile_id: null
+      const contractorProfile = {
+        zip: zip,
+        travel_radius_miles: travel_radius_miles,
+        user_id: user.id
     };
     
-    fetch(`/properties/${property.id}/jobs`, {
+    fetch(`/contractor-profile`, {
       method: 'POST', 
       headers:{'Content-Type': 'application/json'},
-      body:JSON.stringify(job)
+      body:JSON.stringify(contractorProfile)
     })
     .then(res => {
         if(res.ok){
-            res.json().then(job => {
+            res.json().then(user => {
               Promise.all(
                 labor_categories.map(labor_category => {
                   return new Promise((resolve) => {
 
-                    const jobLaborCategory = {
-                      job_id: job.id,
-                      labor_category_id: labor_category.id
+                    const contractorSpecialty = {
+                        contractor_profile_id: user.contractor_profile.id,
+                        labor_category_id: labor_category.id
                     };
 
-                    fetch(`/job_labor_categories`, {
+                    fetch(`/contractor_specialties`, {
                       method: 'POST', 
                       headers:{'Content-Type': 'application/json'},
-                      body:JSON.stringify(jobLaborCategory)
+                      body:JSON.stringify(contractorSpecialty)
                     })
                     .then(res => {
                       if(res.ok){
@@ -126,7 +123,7 @@ function AddJobDialog({ property, addJob }) {
                           })
                         })
                       } else {
-                        console.log("Error: job labor categories POST")
+                        console.log("Error: contractor speciality categories POST")
                       }
 
                     })
@@ -134,19 +131,17 @@ function AddJobDialog({ property, addJob }) {
                 })
               )
               .then(() => {
-                console.log("Job labor categories added to job.");
+                console.log("Contractor specialities added to contractor profile.");
 
                 setFormData({
-                  title: '',
-                  description: '',
-                  timeline: '',
-                  is_accepted: false,
-                  is_completed: false,
+                  zip: '',
+                  travel_radius_miles: '',
                   labor_categories: []
                 });
-                handleClose();
               })
-              .then(addJob(job, user))
+              .then(updateContractorProfile(user))
+              .then(handleClose())
+              .then(history.push(`/jobs-needed`))
             })
         } else {
             res.json().then(json => {
@@ -162,14 +157,17 @@ function AddJobDialog({ property, addJob }) {
 
   return (
     <div>
-      <Button variant="outlined" color="success" onClick={handleClickOpen} startIcon={<AddCircleIcon />}>
+        <MenuItem onClick={handleClickOpen}>
+            <Typography textAlign="center">Become a Contractor</Typography>
+        </MenuItem>
+      {/* <Button variant="outlined" color="success" onClick={handleClickOpen} startIcon={<AddCircleIcon />}>
         Add Job
-      </Button>
+      </Button> */}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add New Job</DialogTitle>
+        <DialogTitle>Create a Contractor Profile</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To add a new job to this property, fill out the job details below!
+            To become a JINDAH contractor, fill out the profile below.
           </DialogContentText>
           <ActionAlerts messages={alertMessages} severity={severity}/>
           <Grid container spacing={2}>
@@ -181,60 +179,46 @@ function AddJobDialog({ property, addJob }) {
                   freeSolo
                   name="laborCategoryName"
                   options={laborCategories.map((laborCategory) => laborCategory.name )}
-                  renderInput={(params) => <TextField {...params} label="Job Category" />}
+                  renderInput={(params) => <TextField {...params} label="Contractor Specialties" />}
               />
             </Grid>
             { labor_categories ? <Grid item xs={12}><LaborTags laborTags={labor_categories} deleteLaborTag={ deleteLaborTag } /></Grid> : null } 
             <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                id="zip"
+                label="Your 5-Digit Zipcode"
+                name="zip"
+                autoComplete="zip"
+                value={ zip }
+                onChange={ handleChange }
+              />
+            </Grid>
+            <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="timeline-label">Timeline</InputLabel>
+                <InputLabel id="travel_radius_miles-label">Preferred Travel Radius (miles)</InputLabel>
                 <Select
-                    labelId="timeline-label"
-                    id="timeline"
-                    name="timeline"
-                    label="Timeline"
-                    value={ timeline }
+                    labelId="travel_radius_miles-label"
+                    id="travel_radius_miles"
+                    name="travel_radius_miles"
+                    label="Miles"
+                    value={ travel_radius_miles }
                     onChange={ handleChange }
                 >   
-                    { timelineArray }
+                    { distanceArray }
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="title"
-                label="Job Title"
-                name="title"
-                autoComplete="title"
-                value={ title }
-                onChange={ handleChange }
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                autoComplete="description"
-                name="description"
-                required
-                fullWidth
-                multiline
-                rows={4}
-                id="description"
-                label="Job Description"
-                value={ description }
-                onChange={ handleChange }
-              />
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Add Job</Button>
+          <Button onClick={handleSubmit}>Create Profile</Button>
         </DialogActions>
       </Dialog>
     </div>
   );
 }
 
-export default AddJobDialog;
+export default AddContractorProfile;

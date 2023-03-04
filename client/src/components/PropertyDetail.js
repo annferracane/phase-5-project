@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardHeader, List } from '@mui/material';
 import PropertyCard from "./PropertyCard";
+import Jobs from "./Jobs";
 import JobList from "./JobList";
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -30,7 +31,7 @@ function PropertyDetail() {
     if(!property || !propertyJobs) { return <h2>Loading...</h2> }
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={7} lg={7} > 
                     <Grid container spacing={3}>
@@ -38,8 +39,8 @@ function PropertyDetail() {
                             <CardHeader title={ "Property Location" } />
                             <Card sx={{ flex: 1 }}>
                                 <PropertyCard
-                                    to="/"
-                                    icon={DollarIcon}
+                                    to={`/property/${property.id}`}
+                                    icon={ DollarIcon }
                                     title={ property.street_address }
                                     subtitle_one={ property.property_category + ' Property' }
                                     subtitle_two={ property.city_state }
@@ -47,12 +48,13 @@ function PropertyDetail() {
                             </Card>
                         </Grid>
                         <Grid item xs={12}>
-                            <Card sx={{ flex: 1 }}>
+                            {/* <Card sx={{ flex: 1 }}> */}
                                 <CardHeader title={ "Jobs" } />
-                                <List dense={ true }>
+                                <Jobs jobs={ propertyJobs }/>
+                                {/* <List dense={ true }>
                                     <JobList jobs={ propertyJobs } />
-                                </List>
-                            </Card>
+                                </List> */}
+                            {/* </Card> */}
                         </Grid>
                     </Grid>
                 </Grid>
