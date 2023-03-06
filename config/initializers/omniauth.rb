@@ -4,4 +4,4 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 OmniAuth.config.allowed_request_methods = %i[get]
 
 # config/initializers/omniauth.rb
-# OmniAuth.config.full_host = Rails.env.production? ? 'https://domain.com' : 'http://localhost:4000'
+OmniAuth.config.full_host = Rails.env.production? ? 'https://jindah-app.onrender.com' : 'http://localhost:4000'
