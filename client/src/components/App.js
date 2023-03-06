@@ -132,6 +132,11 @@ function App() {
       <Navigation />
         <div className="App">
           <Switch>
+            <Route path='/auth' component={() => {
+                window.location.href = 'https://jindah-app.onrender.com/auth/google_oauth2';
+                //window.location.href = 'http://localhost:3000/auth/google_oauth2';
+                return null;
+            }}/>
             <Route path="/job/:id">
               <JobDetail deleteJob={ deleteJob } editJob={ editJob }/>
             </Route>

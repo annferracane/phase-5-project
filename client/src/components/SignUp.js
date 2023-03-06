@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { UserContext } from "../context/user";
-
 import Avatar from '@mui/material/Avatar';
 import ActionAlerts from './ActionAlerts';
 import Button from '@mui/material/Button';
@@ -14,7 +13,11 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Chip from '@mui/material/Chip';
+import GoogleIcon from '@mui/icons-material/Google';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+// import { gapi } from 'gapi-script';
 
 function Copyright(props) {
   return (
@@ -30,7 +33,7 @@ function Copyright(props) {
 }
 
 function SignUp() {
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const [severity, setSeverity] = useState();
   const [alertMessages, setAlertMessages] = useState([]);
   const history = useHistory();
@@ -44,10 +47,14 @@ function SignUp() {
 
   const { email, password } = formData;
 
+  const handleGoogleLogin = () => {
+    history.push('/auth')
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -96,7 +103,21 @@ function SignUp() {
             Sign up
           </Typography>
           <ActionAlerts messages={alertMessages} severity={severity}/>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box sx={{ mt: 3, marginBotton: 8 }}>
+            <Button
+                component={Link}
+                startIcon={<GoogleIcon />} 
+                onClick={handleGoogleLogin}
+                variant="contained"
+                >
+                Sign Up With Google
+            </Button>
+          </Box>
+          <Box sx={{ mt: 3 }}></Box>
+          <Divider style={{width:'100%'}}>
+            <Chip label="Or" />
+          </Divider>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, alignItems: 'center' }} >
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
