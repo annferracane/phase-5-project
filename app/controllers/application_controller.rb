@@ -16,12 +16,6 @@ class ApplicationController < ActionController::API
       render json: {errors: "Not Authorized"}, status: :unauthorized unless current_user
   end 
 
-  # test route
-  def hello_world
-    session[:count] = (session[:count] || 0) + 1
-    render json: { count: session[:count] }
-  end
-
   private
 
   def render_unprocessable_entity(invalid)

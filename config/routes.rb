@@ -26,9 +26,9 @@ Rails.application.routes.draw do
   delete '/delete-labor-categories/:job_id', to: 'labor_categories#delete_labor_categories'
 
   # fallback route
-  get '*path',
-      to: 'fallback#index',
-      constraints: ->(req) { !req.xhr? && req.format.html? }
+  # get '*path',
+  #     to: 'fallback#index',
+  #     constraints: ->(req) { !req.xhr? && req.format.html? }
   
   get '/sample-jobs', to: 'jobs#sample_job_index'
 
@@ -43,8 +43,10 @@ Rails.application.routes.draw do
   # get '/users/:user_id/contractor-profile', to: 'contractor_profiles#show'
 
    # Add auth routes here
+
   post '/login', to: 'sessions#create'
   get '/authorized_user', to: 'users#show'
-  delete '/logout', to:'sessions#destroy'
+  delete '/logout', to: 'sessions#destroy'
+  get '/auth/:provider/callback', to: 'sessions#omniauth'
 
 end
