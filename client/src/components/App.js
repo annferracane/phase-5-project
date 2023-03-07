@@ -178,7 +178,7 @@ function App() {
               <Welcome />
             </Route>
             <Route path="/">
-              <JobsNeeded jobs={ jobs } addJob={ addJob } deleteJob={ deleteJob } editJob={ editJob } />
+              <JobsNeeded jobs={ jobs } addJob={ addJob } deleteJob={ deleteJob } editJob={ editJob } properties={ properties }/>
             </Route>
           </Switch>
         </div>

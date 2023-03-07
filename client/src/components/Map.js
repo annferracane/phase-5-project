@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import MapMarkerDialog from './MapMarkerDialog';
 
@@ -20,22 +20,22 @@ function Map({ properties }) {
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
     });
 
-    const [map, setMap] = React.useState(null);
+    /*
+    const [map, setMap] = useState(null);
 
-    const onLoad = React.useCallback(function callback(map) {
+    const onLoad = useCallback(function callback(map) {
         // This is just an example of getting and using the map instance!!! don't just blindly copy!
-        //const bounds = new window.google.maps.LatLngBounds(center);
-        //map.fitBounds(bounds);
+        const bounds = new window.google.maps.LatLngBounds(center);
+        map.fitBounds(bounds);
 
-        //setMap(map)
+        setMap(map)
     }, []);
+  
 
-    const onUnmount = React.useCallback(function callback(map) {
+    const onUnmount = useCallback(function callback(map) {
         setMap(null)
     }, []);
-
-
-    if(!properties) return (<h2>Loading...</h2>)
+      */
 
     const propertyLocationArray = properties.map(property => {
 
@@ -48,16 +48,25 @@ function Map({ properties }) {
         }
     });
 
-    return isLoaded ? (
-        <GoogleMap
+    const buildMap = useMemo(() => {
+        return (
+            <GoogleMap
             mapContainerStyle={containerStyle}
             center={center}
             zoom={4}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-        >
-            { propertyLocationArray }
-        </GoogleMap>
+            // onLoad={onLoad}
+            // onUnmount={onUnmount}
+            >
+                { propertyLocationArray }
+                
+            </GoogleMap>
+        )
+    }, [propertyLocationArray]);
+
+    if(!properties) return (<h2>Loading...</h2>)
+
+    return isLoaded ? (
+        <>{ buildMap }</>
     ) : <></>
 }
 

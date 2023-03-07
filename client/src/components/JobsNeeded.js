@@ -13,7 +13,7 @@ function JobsNeeded({ jobs, addJob, deleteJob, editJob, contractorProfile, prope
     const map = (<Map properties={ properties } />);
     
     // Show loading if jobs is null
-   if(!jobs ) { return <h2>Loading...</h2> }
+   if(!jobs || !map ) { return <h2>Loading...</h2> }
 
     return (
         <>
