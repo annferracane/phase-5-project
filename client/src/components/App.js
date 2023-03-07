@@ -154,7 +154,7 @@ function App() {
         <div className="App">
           <Switch>
             <Route path="/contractor-dashboard">
-              <ContractorDashboard contractorProfile={ contractorProfile }/>
+              <ContractorDashboard addJob={addJob} contractorProfile={ contractorProfile }/>
             </Route>
             <Route path="/dashboard">
               <Dashboard profile={ profile } addPropertyToList={ addPropertyToList } deletePropertyFromList={ deletePropertyFromList } addJob={ addJob } deleteJob={ deleteJob } jobs={ jobs } properties={ properties } />
@@ -178,7 +178,7 @@ function App() {
               <Welcome />
             </Route>
             <Route path="/">
-              <JobsNeeded jobs={ jobs } deleteJob={ deleteJob } editJob={ editJob } />
+              <JobsNeeded jobs={ jobs } addJob={ addJob } deleteJob={ deleteJob } editJob={ editJob } />
             </Route>
           </Switch>
         </div>

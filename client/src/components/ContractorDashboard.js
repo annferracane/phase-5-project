@@ -3,7 +3,7 @@ import { UserContext } from "../context/user";
 import Hero from './Hero';
 import Jobs from './Jobs';
 
-function ContractorDashboard({contractorProfile}) {
+function ContractorDashboard({ contractorProfile, addJob }) {
     const { user } = useContext(UserContext);
     const [contractorJobs, setContractorJobs] = useState([]);
     const [errors, setErrors] = useState(null);
@@ -20,6 +20,11 @@ function ContractorDashboard({contractorProfile}) {
         })
       }, [user]);
 
+    const releaseJob = (releaseJob) => {
+      const newJobs = contractorJobs.filter(job => job.id !== releaseJob.id);
+      setContractorJobs(newJobs);
+    };
+
     if(errors) return <h1>{errors}</h1>
 
     // Show loading if contractorJobs is null
@@ -28,7 +33,7 @@ function ContractorDashboard({contractorProfile}) {
     return (
         <>
             <Hero title={`${user.profile.first_name}'s Accepted Jobs`} summary="Thanks for tackling these jobs!" ctaFirst={ ctaFirst }/>
-            <Jobs jobs={ contractorJobs } contractorProfile={contractorProfile} />
+            <Jobs jobs={ contractorJobs } addJob={ addJob } releaseJob={ releaseJob } contractorProfile={contractorProfile} />
         </>
     )
 

@@ -2,7 +2,7 @@ import JobItem from './JobItem';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 
-function Jobs({ jobs, deleteJob, editJob, contractorProfile }) {
+function Jobs({ jobs, addJob, releaseJob, deleteJob, editJob, contractorProfile }) {
 
     const jobCards = jobs.map(job => {
         return (
@@ -15,7 +15,7 @@ function Jobs({ jobs, deleteJob, editJob, contractorProfile }) {
     const contractorJobCards = jobs.map(job => {
         return (
             <Grid item xs={12} key={job.id} >
-                <JobItem job={ job } jobLaborCategories={ job.labor_categories } contractorProfile={ contractorProfile } />
+                <JobItem job={ job } jobLaborCategories={ job.labor_categories } contractorProfile={ contractorProfile } deleteJob={ deleteJob } addJob={ addJob } releaseJob={ releaseJob }/>
             </Grid>
         )
     } )

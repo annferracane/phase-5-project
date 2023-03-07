@@ -5,7 +5,7 @@ import Hero from './Hero';
 import Jobs from './Jobs';
 import Map from './Map';
 
-function JobsNeeded({ jobs, deleteJob, editJob, contractorProfile, properties }) {
+function JobsNeeded({ jobs, addJob, deleteJob, editJob, contractorProfile, properties }) {
     const { user } = useContext(UserContext);
     const ctaFirst = ['Login to See More','/login'];
     const ctaSecond = ['Add a Job','/dashboard'];
@@ -26,7 +26,7 @@ function JobsNeeded({ jobs, deleteJob, editJob, contractorProfile, properties })
                 >
                     <Container maxWidth="md">
                         { map }
-                        <Jobs jobs={ jobs } deleteJob={ deleteJob } editJob={ editJob } contractorProfile={ contractorProfile }/>
+                        <Jobs jobs={ jobs } addJob={ addJob } deleteJob={ deleteJob } editJob={ editJob } contractorProfile={ contractorProfile }/>
                     </Container>
                 </Box>
         </>

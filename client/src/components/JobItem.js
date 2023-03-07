@@ -19,7 +19,7 @@ import EditJobDialog from './EditJobDialog';
 import LaunchIcon from '@mui/icons-material/Launch';
 
 
-function JobItem({ job, jobLaborCategories, deleteJob, editJob, editJobDetailDisplay, hideSeeJobButton, contractorProfile }) {
+function JobItem({ job, jobLaborCategories, addJob, deleteJob, editJob, editJobDetailDisplay, hideSeeJobButton, contractorProfile, releaseJob }) {
   const { user } = useContext(UserContext);
   const history = useHistory();
   const [isAccepted, setIsAccepted] = useState(job.is_accepted);
@@ -69,10 +69,11 @@ function JobItem({ job, jobLaborCategories, deleteJob, editJob, editJobDetailDis
           console.log("success");
           if(acceptedVal) {
             setIsAccepted(true); 
-            //need to call a function to remove from list
+            deleteJob(job.id);
           } else {
             setIsAccepted(false);
-            //need to call a function to add to list
+            addJob(job);
+            releaseJob(job);
           }
         } else {
           res.json().then(json => {
