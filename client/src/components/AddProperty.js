@@ -31,12 +31,11 @@ function AddProperty({addPropertyToList}) {
         city: '',
         state_abbr: '',
         zip: '',
-        country: '',
         property_category: ''
       });
       
 
-    const { street_address_1, street_address_2, city, state_abbr, zip, country, property_category } = formData;
+    const { street_address_1, street_address_2, city, state_abbr, zip, property_category } = formData;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -45,44 +44,62 @@ function AddProperty({addPropertyToList}) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
-        const property = {
-          street_address_1: street_address_1,
-          street_address_2: street_address_2,
-          city: city,
-          state: state_abbr,
-          zip: zip,
-          country: country,
-          property_category: property_category,
-          user_id: user.id
-      };
-    
-      fetch(`/properties`,{
-        method: 'POST', 
-        headers:{'Content-Type': 'application/json'},
-        body:JSON.stringify(property)
-      })
-      .then(res => {
-          if(res.ok){
-              res.json().then(property => {
-                setFormData({
-                    street_address_1: '',
-                    street_address_2: '',
-                    city: '',
-                    state_abbr: '',
-                    zip: '',
-                    country: '',
-                    property_category: ''
-                  });
-                  addPropertyToList(property);
-              })
-          }else {
-              res.json().then(json => {
-                setSeverity("error");
-                setAlertMessages(Object.entries(json.errors));
-            });
-          }
-      })
+
+        const search_addr = street_address_1 + ', ' + city + ', ' + state_abbr + ' ' + zip; 
+
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${search_addr}&key=AIzaSyBhrX6UkpT0rr5RXNLk3JIFZU2lJGSlZHo`)
+          .then(res => {
+              if(res.ok){
+                  res.json().then(data => {
+                    const gLat = data.results[0].geometry.location.lat;
+                    const gLng = data.results[0].geometry.location.lng;
+
+                    const property = {
+                        street_address_1: street_address_1,
+                        street_address_2: street_address_2,
+                        city: city,
+                        state: state_abbr,
+                        zip: zip,
+                        lat: gLat,
+                        lng: gLng,
+                        country: 'United States',
+                        property_category: property_category,
+                        user_id: user.id
+                    };
+                  
+                    fetch(`/properties`,{
+                      method: 'POST', 
+                      headers:{'Content-Type': 'application/json'},
+                      body:JSON.stringify(property)
+                    })
+                    .then(res => {
+                        if(res.ok){
+                            res.json().then(property => {
+                              setFormData({
+                                  street_address_1: '',
+                                  street_address_2: '',
+                                  city: '',
+                                  state_abbr: '',
+                                  zip: '',
+                                  property_category: ''
+                                });
+                                addPropertyToList(property);
+                            })
+                        }else {
+                            res.json().then(json => {
+                              setSeverity("error");
+                              setAlertMessages(Object.entries(json.errors));
+                          });
+                        }
+                      })
+                  })
+              } else {
+                res.json().then(json => {
+                    setSeverity("error");
+                    setAlertMessages([[0, "Address is not a valid location."]]);
+                }); 
+              }
+            })
       };
 
 

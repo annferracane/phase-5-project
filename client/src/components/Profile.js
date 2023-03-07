@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../context/user";
+import { ProfileContext } from "../context/profile";
 import { useHistory } from 'react-router-dom';
 import ActionAlerts from './ActionAlerts';
 import Avatar from '@mui/material/Avatar';
@@ -12,8 +13,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Profile({ profile, updateProfile }) {
+function Profile() {
   const { user } = useContext(UserContext);
+  const { profile, setProfile } = useContext(ProfileContext);
   const [severity, setSeverity] = useState();
   const [alertMessages, setAlertMessages] = useState([]);
   const [email, setEmail] = useState(user ? user.email : '');
@@ -57,8 +59,8 @@ function Profile({ profile, updateProfile }) {
       if(res.ok){
           res.json()
           .then(user => {
-            updateProfile(user);
-            if(fetchMethod == "PATCH") {
+            setProfile(user.profile);
+            if(fetchMethod === "PATCH") {
                 setSeverity("success");
                 setAlertMessages([[0, "Profile Saved!"]]);
             } else { 

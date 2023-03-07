@@ -17,7 +17,6 @@ import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
 import GoogleIcon from '@mui/icons-material/Google';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-// import { gapi } from 'gapi-script';
 
 function Copyright(props) {
   return (
@@ -142,12 +141,6 @@ function SignUp() {
                   value={ password } onChange={ handleChange }
                 />
               </Grid>
-              {/* <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I agree to the terms of service."
-                />
-              </Grid> */}
             </Grid>
             <Button
               type="submit"

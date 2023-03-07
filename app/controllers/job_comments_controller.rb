@@ -18,6 +18,6 @@ class JobCommentsController < ApplicationController
     private
 
     def job_comment_params
-        params.permit(:job_id, :comment)
+        params.permit(:job_id, :comment, :user_id)
     end
 end

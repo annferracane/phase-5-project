@@ -6,6 +6,8 @@ class CreateProperties < ActiveRecord::Migration[7.0]
       t.string :city
       t.string :state
       t.string :zip
+      t.float :lat
+      t.float :lng
       t.string :country
       t.string :property_category
       t.integer :user_id

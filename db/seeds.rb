@@ -114,6 +114,8 @@ user_groups.map { | user_group |
             city: Faker::Address.city,
             state: Faker::Address.state_abbr,
             zip: Faker::Address.zip,
+            lat: Faker::Address.latitude, 
+            lng: Faker::Address.longitude,
             country: 'United States',
             property_category: ['Commercial', 'Residential'].sample,
             user_id: user.id
@@ -208,7 +210,7 @@ jobs = Job.limit(100)
         job_id = job.id
         comment = comments.sample
         
-        JobComment.create!(job_id: job_id, comment: comment)
+        JobComment.create!(job_id: job_id, comment: comment, user_id: User.all.sample.id)
     }
 
 end

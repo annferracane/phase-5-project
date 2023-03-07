@@ -32,7 +32,7 @@
 /client/node_modules
 
 # Ignore history
-# .history
+.history/
 
 # Ignore env
 .env

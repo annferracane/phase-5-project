@@ -1,17 +1,19 @@
 import * as React from 'react';
-import { List } from '@mui/material';
+import { List, Stack } from '@mui/material';
 import CustomListItem from "./CustomListItem";
 
-function Properties({ properties, addJob }) {
+function Properties({ userProperties, addJob, deletePropertyFromList }) {
 
-    const propertyArray = properties.map(property => <CustomListItem key={'property-' + property.id} itemType={ 'property' } item={property} passedFunctions={[addJob]}/>)
+    const propertyArray = userProperties.map(property => <CustomListItem key={'property-' + property.id} itemType={ 'property' } item={property} passedFunctions={[addJob, deletePropertyFromList]}/>)
 
-    // Show loading if jobs is null
-   if(!properties) { return <h2>Loading...</h2> }
+    // Show loading if userProperties is null
+   if(!userProperties) { return <h2>Loading...</h2> }
 
     return (
         <List dense={ true }>
-            { propertyArray }
+            <Stack spacing={ 2 }>
+                { propertyArray }
+            </Stack>
         </List>
     )
 

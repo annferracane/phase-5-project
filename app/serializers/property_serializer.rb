@@ -1,5 +1,5 @@
 class PropertySerializer < ActiveModel::Serializer
-  attributes :id, :street_address_1, :street_address_2, :city, :state, :zip, :country, :property_category, :user_id, :street_address, :city_state, :user_profile_image
+  attributes :id, :street_address_1, :street_address_2, :city, :state, :zip, :lat, :lng, :country, :property_category, :user_id, :street_address, :city_state, :user_profile_image, :jobs_available
   
   has_many :jobs
   belongs_to :user
@@ -21,7 +21,15 @@ class PropertySerializer < ActiveModel::Serializer
     if self.object.user.profile
       self.object.user.profile.image
     else
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3y6KF3tG1JFKYb5-pdMgdaHrfd9jZ_Crkaw&usqp=CAU" # revisit
+      ""
+    end
+  end
+
+  def jobs_available
+    if self.object.jobs
+      self.object.jobs.where(is_accepted: false, is_completed: false).size
+    else
+      0
     end
   end
 

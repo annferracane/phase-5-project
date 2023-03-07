@@ -1,13 +1,10 @@
-import * as React from 'react';
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Card, CardHeader, List } from '@mui/material';
-import PropertyCard from "./PropertyCard";
+import { Card, CardHeader, Container, Grid } from '@mui/material';
 import Jobs from "./Jobs";
-import JobList from "./JobList";
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import DollarIcon from '@mui/icons-material/AttachMoney';
+import PropertyCard from "./PropertyCard";
+import BusinessIcon from '@mui/icons-material/Business';
+import HomeIcon from '@mui/icons-material/Home';
 
 function PropertyDetail() {
     const params = useParams();
@@ -15,19 +12,21 @@ function PropertyDetail() {
     const [property, setProperty] = useState(null);
     const [propertyJobs, setPropertyJobs] = useState(null);
     
+    // Fetch property detail
     useEffect(() => {
         fetch(`/properties/${id}`)
-          .then((r) => r.json())
-          .then((property) => setProperty(property));
+        .then((r) => r.json())
+        .then((property) => setProperty(property));
       }, []);
 
-      useEffect(() => {
+    // Fetch the jobs of that property
+    useEffect(() => {
         fetch(`/properties/${id}/jobs`)
-          .then((r) => r.json())
-          .then((propertyJobs) => setPropertyJobs(propertyJobs));
-      }, []);
+        .then((r) => r.json())
+        .then((propertyJobs) => setPropertyJobs(propertyJobs));
+    }, []);
 
-    // Show loading if property is null
+    // Show loading if property or propertyjobs is null
     if(!property || !propertyJobs) { return <h2>Loading...</h2> }
 
     return (
@@ -40,7 +39,7 @@ function PropertyDetail() {
                             <Card sx={{ flex: 1 }}>
                                 <PropertyCard
                                     to={`/property/${property.id}`}
-                                    icon={ DollarIcon }
+                                    icon={ property.property_category === 'Residential' ? HomeIcon : BusinessIcon }
                                     title={ property.street_address }
                                     subtitle_one={ property.property_category + ' Property' }
                                     subtitle_two={ property.city_state }
@@ -48,20 +47,14 @@ function PropertyDetail() {
                             </Card>
                         </Grid>
                         <Grid item xs={12}>
-                            {/* <Card sx={{ flex: 1 }}> */}
-                                <CardHeader title={ "Jobs" } />
-                                <Jobs jobs={ propertyJobs }/>
-                                {/* <List dense={ true }>
-                                    <JobList jobs={ propertyJobs } />
-                                </List> */}
-                            {/* </Card> */}
+                            <CardHeader title={ "Jobs" } />
+                            <Jobs jobs={ propertyJobs }/>
                         </Grid>
                     </Grid>
                 </Grid>
             </Grid>
         </Container>
     )
-
 };
 
 export default PropertyDetail;

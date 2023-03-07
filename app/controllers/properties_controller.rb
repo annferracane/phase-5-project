@@ -1,6 +1,11 @@
 class PropertiesController < ApplicationController
+
     def index
-        properties = User.find(params[:user_id]).properties
+        if params[:user_id]
+            properties = User.find(params[:user_id]).properties
+        else 
+            properties = Property.order(created_at: :desc).limit(30)
+        end
         render json: properties, status: :ok
     end
 
@@ -20,9 +25,15 @@ class PropertiesController < ApplicationController
         render json: property, status: :accepted
     end
 
+    def destroy
+        property = Property.find(params[:id])
+        property.destroy
+        head :no_content
+    end
+
     private
 
     def property_params
-        params.permit(:street_address_1, :street_address_2, :city, :state, :zip, :country, :property_category, :user_id)
+        params.permit(:street_address_1, :street_address_2, :city, :state, :zip, :lat, :lng, :country, :property_category, :user_id)
     end
 end

@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     resources :job_comments, only: [ :index, :create, :destroy ] # may modify to only create or destroy with nested user
   end
   resources :labor_categories, only: [ :index ]
-  resources :properties, only: [ :create, :update, :show ] do
+  resources :properties, only: [ :index, :create, :update, :show, :destroy ] do
     resources :jobs, only: [ :create, :index ]
   end
   resources :profiles, only: [ :create, :update ]

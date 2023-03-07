@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { UserContext } from "../context/user";
-
+import { ProfileContext } from "../context/profile";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ActionAlerts from './ActionAlerts';
 import Avatar from '@mui/material/Avatar';
@@ -15,7 +15,6 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-
 
 
 function Copyright(props) {
@@ -31,8 +30,9 @@ function Copyright(props) {
   );
 }
 
-function Login({updateProfile, updateContractorProfile}) {
+function Login({updateContractorProfile}) {
   const { setUser } = useContext(UserContext);
+  const { setProfile } = useContext(ProfileContext);
   const [severity, setSeverity] = useState();
   const [alertMessages, setAlertMessages] = useState([]);
   const history = useHistory();
@@ -69,8 +69,8 @@ function Login({updateProfile, updateContractorProfile}) {
             res.json().then(user => {
                 setUser(user);
             })
-            .then(updateProfile(user))
-            .then(updateContractorProfile(user))
+            .then(setProfile(user.profile))
+            .then(res => res(updateContractorProfile(user)))
             .then(history.push(`/dashboard`));
         } else {
             res.json().then(json => {

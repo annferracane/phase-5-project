@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
 import { UserContext } from "../context/user";
+import { ProfileContext } from "../context/profile";
 import { useHistory } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
@@ -19,9 +20,13 @@ import AddContractorProfile from './AddContractorProfile';
 
 function Navigation({ contractorProfile, updateContractorProfile }) {
   const { user, setUser } = useContext(UserContext);
+  const { profile } = useContext(ProfileContext);
+  //const [profile, setProfile] = useState(user.profile ? user.profile : null);
+  //const [contractorProfile, setContractorProfile] = useState(user.contractor_profile ? user.contractor_profile : null);
   const history = useHistory();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  
 
   const loggedOutPages = [
     { name: 'All Jobs Needed', link: '/jobs-needed' }
@@ -70,11 +75,6 @@ function Navigation({ contractorProfile, updateContractorProfile }) {
     history.push('/dashboard');
   }
 
-  const handleBecomeContractorClick = () => {
-    handleCloseUserMenu();
-    history.push('/become-a-contractor');
-  }
-
   const handleLogOut = () => {
     handleCloseUserMenu();
     fetch('/logout',{
@@ -98,8 +98,8 @@ function Navigation({ contractorProfile, updateContractorProfile }) {
   let avatarSrc = "";
   if(user) {
     avatarSrc = <Avatar alt={ "" } src={ "" } />
-    if(user.profile) {
-      avatarSrc = <Avatar alt={ user.profile.full_name } src={ user.profile.image } />
+    if(profile) {
+      avatarSrc = <Avatar alt={ profile.full_name } src={ profile.image } />
     }
   }
 

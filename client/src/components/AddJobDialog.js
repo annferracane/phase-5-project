@@ -146,7 +146,7 @@ function AddJobDialog({ property, addJob }) {
                 });
                 handleClose();
               })
-              .then(addJob(job, user))
+              .then(addJob(job))
             })
         } else {
             res.json().then(json => {

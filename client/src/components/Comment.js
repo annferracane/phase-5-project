@@ -1,21 +1,14 @@
 import * as React from 'react';
-import { useContext } from "react";
-import {
-    Card,
-    ListItem,
-    ListItemSecondaryAction,
-    ListItemAvatar,
-    ListItemText,
-    Avatar,
-    Box,
-    Button,
-    Stack
-} from '@mui/material';
+import { useState, useContext } from "react";
+import { UserContext } from "../context/user";
+import { Avatar, Box, Button, Card, ListItem, ListItemSecondaryAction, ListItemAvatar, ListItemText } from '@mui/material';
 
-function Comment( { comment, deleteJobComment }) {
+function Comment({ comment, deleteJobComment }) {
+    const { user } = useContext(UserContext);
+    const [userId, setUserId] = useState(user ? user.id : null);
 
     const handleDelete = () => {
-        fetch(`/users/1/job_comments/${comment.id}`,{ // fix dynamic user
+        fetch(`/users/${user.id}/job_comments/${comment.id}`, {
             method: 'DELETE',
             headers:{'Content-Type': 'application/json'}
           })
@@ -38,14 +31,10 @@ function Comment( { comment, deleteJobComment }) {
    if(!comment) { return <h3>Loading...</h3> }
 
     return (
-        <Card
-            sx={{
-                minHeight: 60
-            }}
-        >
-            <ListItem>
+        <Card sx={{ flex: 1 }}>
+            <ListItem sx={{ minHeight: 80 }}>
                 <ListItemAvatar style={{display:'flex', justifyContent:'center'}}>
-                    <Avatar />
+                <Avatar sx={{ mt: 1, mb: 2 }} alt={ comment.user_first_name } src={ comment.user_profile_image } />
                 </ListItemAvatar>
                 <ListItemText
                     primary={ comment.comment }
@@ -57,14 +46,12 @@ function Comment( { comment, deleteJobComment }) {
                             marginRight: '1em',
                             color: 'text.primary',
                         }}
-                    >   
-                        
-                        { deleteButton }
-                        
+                    >    
+                        { comment.user_id === userId ? deleteButton : null }
                     </Box>
                 </ListItemSecondaryAction>
             </ListItem>
-            </Card>
+        </Card>
     );
 };
 

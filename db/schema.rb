@@ -32,6 +32,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_22_184821) do
   create_table "job_comments", force: :cascade do |t|
     t.integer "job_id"
     t.text "comment"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -76,6 +77,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_22_184821) do
     t.string "city"
     t.string "state"
     t.string "zip"
+    t.float "lat"
+    t.float "lng"
     t.string "country"
     t.string "property_category"
     t.integer "user_id"

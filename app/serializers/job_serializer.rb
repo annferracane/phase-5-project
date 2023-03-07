@@ -7,6 +7,6 @@ class JobSerializer < ActiveModel::Serializer
   belongs_to :property
 
   def job_user_id
-    self.object.property.user.id
+    self.object.property.user_id
   end
 end

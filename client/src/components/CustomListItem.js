@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { purple, orange, green } from '@mui/material/colors';
 import {
     Card,
     IconButton,
@@ -15,16 +16,20 @@ import {
 import LaunchIcon from '@mui/icons-material/Launch';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddJobDialog from './AddJobDialog';
+import BusinessIcon from '@mui/icons-material/Business';
+import HomeIcon from '@mui/icons-material/Home';
+import ConstructionIcon from '@mui/icons-material/Construction';
 
 function CustomListItem({ itemType, item, passedFunctions }) {
     const [itemData, setItemData] = useState({
         primaryText: '',
         secondaryText: '',
         buttonType: null,
-        buttonHref: ''
+        buttonHref: '',
+        avatar: ''
       });
 
-    const { primaryText, secondaryText, buttonType, buttonHref } = itemData;
+    const { avatar, primaryText, secondaryText, buttonType, buttonHref } = itemData;
 
     
     useEffect(() => {
@@ -32,35 +37,51 @@ function CustomListItem({ itemType, item, passedFunctions }) {
             setItemData({
                 primaryText: item.street_address,
                 secondaryText: item.city + ', ' + item.state,
-                buttonType: <AddJobDialog property={ item } addJob={ passedFunctions[0] }/>,
-                buttonHref: `/property/${item.id}`
+                buttonType: <><AddJobDialog property={ item } addJob={ passedFunctions[0] } /> <Button variant="outlined" color="error" onClick={ handleDeleteProperty }><DeleteForeverIcon /></Button></>,
+                buttonHref: `/property/${item.id}`,
+                avatar: item.property_category === 'Residential' ? <Avatar sx={{ bgcolor: purple[500] }}><HomeIcon/></Avatar> : <Avatar sx={{ bgcolor: orange[500] }}><BusinessIcon /></Avatar>
             });
         } else if (itemType === 'job') {
             setItemData({
                 primaryText: item.title,
                 secondaryText: item.timeline,
-                buttonType: <Button variant="outlined" color="error" startIcon={<DeleteForeverIcon />} onClick={ handleDelete }>Delete</Button>,
-                buttonHref: `/job/${item.id}`
+                buttonType: passedFunctions[0] ? <Button variant="outlined" color="error" onClick={ handleDeleteJob }><DeleteForeverIcon /></Button> : null,
+                buttonHref: `/job/${item.id}`,
+                avatar: <Avatar sx={{ bgcolor: green[500] }}><ConstructionIcon/></Avatar>
             });
         }
       },[])
     
-    const handleDelete = () => {    
-        console.log("from custom list deleting job:" + item.id);
+    const handleDeleteJob = () => {    
+        fetch(`/jobs/${item.id}`, {
+            method: 'DELETE',
+            headers:{'Content-Type': 'application/json'}
+        })
+        .then(res => {
+            if(res.ok){
+                passedFunctions[0](item.id);
+            } else {
+                res.json().then(json => {
+                console.log(json.errors);
+                });
+            }
+        });
+    }
 
-    fetch(`/jobs/${item.id}`, {
-        method: 'DELETE',
-        headers:{'Content-Type': 'application/json'}
-    })
-    .then(res => {
-        if(res.ok){
-            passedFunctions[0](item.id);
-        } else {
-            res.json().then(json => {
-            console.log(json.errors);
-            });
-        }
-    });
+    const handleDeleteProperty = () => {    
+        fetch(`/properties/${item.id}`, {
+            method: 'DELETE',
+            headers:{'Content-Type': 'application/json'}
+        })
+        .then(res => {
+            if(res.ok){
+                passedFunctions[1](item.id);
+            } else {
+                res.json().then(json => {
+                console.log(json.errors);
+                });
+            }
+        });
     }
 
     // Show loading if jobs is null
@@ -70,7 +91,7 @@ function CustomListItem({ itemType, item, passedFunctions }) {
         <Card sx={{ flex: 1 }}>
             <ListItem sx={{ minHeight: 80 }}>
                 <ListItemAvatar>
-                    <Avatar />
+                    {avatar}
                 </ListItemAvatar>
                 <ListItemText
                     primary={ primaryText }
@@ -85,12 +106,12 @@ function CustomListItem({ itemType, item, passedFunctions }) {
                         }}
                     >   
                         <Stack
-                        sx={{ pt: 4 }}
-                        direction="row"
-                        spacing={2}
-                        justifyContent="center"
+                            sx={{ pt: 4 }}
+                            direction="row"
+                            spacing={2}
+                            justifyContent="center"
                         >
-                            { itemType === "job" ? <Button size="small" variant="text" disabled> { item.is_accepted ? "Accepted " : "Still Open" } </Button> : null }
+                            { itemType === "job" && passedFunctions[0] ? <Button size="small" variant="text" disabled> { item.is_accepted ? "Accepted " : "Still Open" } </Button> : null }
                             { buttonType }
                             <IconButton aria-label="share" color="primary" href={ buttonHref }><LaunchIcon /></IconButton>
                         </Stack>

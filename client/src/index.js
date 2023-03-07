@@ -4,12 +4,15 @@ import './css/index.css';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import { UserProvider } from "./context/user";
+import { ProfileProvider } from "./context/profile";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <UserProvider>
-      <App />
+      <ProfileProvider>
+        <App />
+      </ProfileProvider>
     </UserProvider>
   </React.StrictMode>
 );
