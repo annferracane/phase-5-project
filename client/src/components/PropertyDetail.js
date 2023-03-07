@@ -17,14 +17,14 @@ function PropertyDetail() {
         fetch(`/properties/${id}`)
         .then((r) => r.json())
         .then((property) => setProperty(property));
-      }, []);
+      }, [id]);
 
     // Fetch the jobs of that property
     useEffect(() => {
         fetch(`/properties/${id}/jobs`)
         .then((r) => r.json())
         .then((propertyJobs) => setPropertyJobs(propertyJobs));
-    }, []);
+    }, [id]);
 
     // Show loading if property or propertyjobs is null
     if(!property || !propertyJobs) { return <h2>Loading...</h2> }

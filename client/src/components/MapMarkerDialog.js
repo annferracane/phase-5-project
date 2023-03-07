@@ -11,7 +11,7 @@ import JobList from "./JobList";
 
 function MapMarkerDialog({ property }) {
     const [open, setOpen] = useState(false);
-    const [jobs, setJobs] = useState(property ? property.jobs : []);
+    const [jobs] = useState(property ? property.jobs : []);
 
     const propLatLng = {lat: property.lat, lng: property.lng }
 

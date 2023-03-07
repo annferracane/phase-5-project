@@ -1,24 +1,13 @@
 import { useState, useEffect } from "react";
 import { purple, orange, green } from '@mui/material/colors';
-import {
-    Card,
-    IconButton,
-    ListItem,
-    ListItemSecondaryAction,
-    ListItemAvatar,
-    ListItemText,
-    Avatar,
-    Box,
-    Button,
-    Stack,
-    Typography
-} from '@mui/material';
+import { Avatar, Box, Button, Card, IconButton, ListItem, ListItemSecondaryAction, ListItemAvatar, ListItemText, Stack } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import AddJobDialog from './AddJobDialog';
 import BusinessIcon from '@mui/icons-material/Business';
 import HomeIcon from '@mui/icons-material/Home';
 import ConstructionIcon from '@mui/icons-material/Construction';
+import AddJobDialog from './AddJobDialog';
+
 
 function CustomListItem({ itemType, item, passedFunctions }) {
     const [itemData, setItemData] = useState({
@@ -50,7 +39,7 @@ function CustomListItem({ itemType, item, passedFunctions }) {
                 avatar: <Avatar sx={{ bgcolor: green[500] }}><ConstructionIcon/></Avatar>
             });
         }
-      },[])
+      },[item, itemType, passedFunctions])
     
     const handleDeleteJob = () => {    
         fetch(`/jobs/${item.id}`, {

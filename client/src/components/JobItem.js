@@ -144,7 +144,7 @@ function JobItem({ job, jobLaborCategories, deleteJob, editJob, editJobDetailDis
           <Stack direction="row" spacing={2}>
             { contractorProfile ? acceptReleaseButtons : null }
             { hideSeeJobButton ? null : seeJobButton }
-            { user && user.id == job.job_user_id ? editDeleteButtons : null }
+            { user && user.id === job.job_user_id ? editDeleteButtons : null }
           </Stack>
         </CardActions>
       </Card>

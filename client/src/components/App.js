@@ -41,7 +41,7 @@ function App() {
         res.json().then(data => setErrors(data.error));
       }
     })
-  },[setUser, profile, contractorProfile])
+  },[setUser, profile, contractorProfile, setProfile])
 
   // Can be fetched without user context
   useEffect(() => { 

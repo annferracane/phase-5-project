@@ -47,7 +47,7 @@ function AddProperty({addPropertyToList}) {
 
         const search_addr = street_address_1 + ', ' + city + ', ' + state_abbr + ' ' + zip; 
 
-        fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${search_addr}&key=AIzaSyBhrX6UkpT0rr5RXNLk3JIFZU2lJGSlZHo`)
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${search_addr}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`)
           .then(res => {
               if(res.ok){
                   res.json().then(data => {

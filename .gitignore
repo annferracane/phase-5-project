@@ -34,5 +34,6 @@
 # Ignore history
 .history/
 
-# Ignore env
+# Ignore .env files
 .env
+/client/.env

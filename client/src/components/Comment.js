@@ -5,7 +5,7 @@ import { Avatar, Box, Button, Card, ListItem, ListItemSecondaryAction, ListItemA
 
 function Comment({ comment, deleteJobComment }) {
     const { user } = useContext(UserContext);
-    const [userId, setUserId] = useState(user ? user.id : null);
+    const [userId] = useState(user ? user.id : null);
 
     const handleDelete = () => {
         fetch(`/users/${user.id}/job_comments/${comment.id}`, {

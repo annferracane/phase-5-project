@@ -18,7 +18,7 @@ function Profile() {
   const { profile, setProfile } = useContext(ProfileContext);
   const [severity, setSeverity] = useState();
   const [alertMessages, setAlertMessages] = useState([]);
-  const [email, setEmail] = useState(user ? user.email : '');
+  const [email] = useState(user ? user.email : '');
   const theme = createTheme();
   const history = useHistory();
 

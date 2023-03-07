@@ -1,7 +1,4 @@
-import * as React from 'react';
-//Consolidate
-import { useState, useContext, useEffect } from "react";
-import { UserContext } from "../context/user";
+import { useState, useEffect } from "react";
 import ActionAlerts from './ActionAlerts';
 import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
@@ -21,7 +18,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import LaborTags from './LaborTags';
 
 function EditJobDialog({ job, editJob, editJobDetailDisplay }) {
-    const { user, setUser } = useContext(UserContext); // resolve this
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState();
     const [alertMessages, setAlertMessages] = useState([]);
@@ -55,7 +51,7 @@ function EditJobDialog({ job, editJob, editJobDetailDisplay }) {
   
     const deleteLaborTag = (laborTagToDelete) => {
       const newLaborTags = labor_categories.filter(laborTag => laborTag.id !== laborTagToDelete.id);
-      setFormData({ ...formData, ["labor_categories"]: newLaborTags });
+      setFormData({ ...formData, labor_categories: newLaborTags });
     }
 
     const handleLaborCategoryChange = (value) => {
@@ -69,7 +65,7 @@ function EditJobDialog({ job, editJob, editJobDetailDisplay }) {
                           name: value
                         }
                         const newLaborTags = [...labor_categories, laborObj];
-                        setFormData({ ...formData, ["labor_categories"]: newLaborTags });
+                        setFormData({ ...formData, labor_categories: newLaborTags });
                     })
                 } else {
                     res.json().then(json => console(Object.entries(json.errors)));

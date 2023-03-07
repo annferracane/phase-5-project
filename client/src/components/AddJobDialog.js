@@ -1,26 +1,10 @@
-//Consolidate
-import { useState, useContext, useEffect } from "react";
-import { UserContext } from "../context/user";
-import ActionAlerts from './ActionAlerts';
-import Autocomplete from '@mui/material/Autocomplete';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import Grid from '@mui/material/Grid';
-import DialogTitle from '@mui/material/DialogTitle';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
+import { useState, useEffect } from "react";
+import {Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-
+import ActionAlerts from './ActionAlerts';
 import LaborTags from './LaborTags';
 
 function AddJobDialog({ property, addJob }) {
-    const { user } = useContext(UserContext); 
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState();
     const [alertMessages, setAlertMessages] = useState([]);
