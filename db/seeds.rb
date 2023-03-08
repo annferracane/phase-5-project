@@ -69,7 +69,7 @@ puts "Seeding contractor profiles..."
 
 25.times do
     ContractorProfile.create!(
-        zip: Faker::Address.zip_code, 
+        zip: Faker::Address.zip_code.first(5),
         travel_radius_miles: rand(10..300),
         user_id: User.all.sample.id
     )
