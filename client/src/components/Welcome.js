@@ -1,18 +1,12 @@
-import * as React from 'react';
-import Hero from './Hero';
-import Avatar from '@mui/material/Avatar';
-import CssBaseline from '@mui/material/CssBaseline';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Avatar, Box, CssBaseline, Grid, Paper } from '@mui/material';
+import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+import Hero from './Hero';
 
 function Welcome() {
-
+    // Variables
     const theme = createTheme();
-    
     const ctaFirst = ['Login','/login'];
     const ctaSecond = ['Sign Up','/signup'];
 

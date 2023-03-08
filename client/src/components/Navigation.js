@@ -2,32 +2,21 @@ import { useState, useContext } from 'react';
 import { UserContext } from "../context/user";
 import { ProfileContext } from "../context/profile";
 import { useHistory } from 'react-router-dom';
-import AppBar from '@mui/material/AppBar';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
+import { AppBar, Avatar, Button, Box, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography  } from '@mui/material';
+import AddContractorProfile from './AddContractorProfile';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import LoginIcon from '@mui/icons-material/Login';
-import AddContractorProfile from './AddContractorProfile';
+import MenuIcon from '@mui/icons-material/Menu';
 
 function Navigation({ contractorProfile, updateContractorProfile }) {
+  // State and other variables
   const { user, setUser } = useContext(UserContext);
   const { profile } = useContext(ProfileContext);
-  //const [profile, setProfile] = useState(user.profile ? user.profile : null);
-  //const [contractorProfile, setContractorProfile] = useState(user.contractor_profile ? user.contractor_profile : null);
   const history = useHistory();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   
-
+  // Defines navigation menu depending on whether user is or is not logged in or is a contractor
   const loggedOutPages = [
     { name: 'All Jobs Needed', link: '/jobs-needed' }
   ];
@@ -50,15 +39,18 @@ function Navigation({ contractorProfile, updateContractorProfile }) {
     pages = loggedOutPages;
   }
 
+  // Handles open/close of nav menus and settings menus
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (link) => {
     setAnchorElNav(null);
+    history.push(link);
   };
 
   const handleCloseUserMenu = () => {
@@ -75,6 +67,7 @@ function Navigation({ contractorProfile, updateContractorProfile }) {
     history.push('/dashboard');
   }
 
+  // Handles logout
   const handleLogOut = () => {
     handleCloseUserMenu();
     fetch('/logout',{
@@ -88,21 +81,23 @@ function Navigation({ contractorProfile, updateContractorProfile }) {
     .then(history.push('/login'));
   }
   
+  // Renders menu for login icon
   const loginMenu = (
     <IconButton href="/login">
       <LoginIcon sx={{ display: { xs: 'none', md: 'flex', color: 'white', }, mr: 1 }} />
     </IconButton>
   );
 
-
+  // Creates an avatar
   let avatarSrc = "";
   if(user) {
     avatarSrc = <Avatar alt={ "" } src={ "" } />
     if(profile) {
       avatarSrc = <Avatar alt={ profile.full_name } src={ profile.image } />
     }
-  }
+  };
 
+  // Settings menu button
   const settingsMenu = (
     <Tooltip title="Open settings">
       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -111,25 +106,27 @@ function Navigation({ contractorProfile, updateContractorProfile }) {
     </Tooltip>
   );
 
+  // Navigation menu
   const navigationMenu = (
     pages.map((page) => (
-      <MenuItem key={page.name} onClick={handleCloseNavMenu} href={ page.link }>
+      <MenuItem key={page.name} onClick={() => handleCloseNavMenu(page.link)}>
         <Typography textAlign="center">{page.name}</Typography>
       </MenuItem>
     ))
   );
 
+  // Become a contractor menu item
   const becomeAContractorNavItems = (
     <AddContractorProfile updateContractorProfile={ updateContractorProfile }/>
   )
 
+  // Navigation buttons
   const navigationButtons = (
     pages.map((page) => (
       <Button
         key={page.name}
-        onClick={handleCloseNavMenu}
+        onClick={() => handleCloseNavMenu(page.link)}
         sx={{ my: 2, color: 'white', display: 'block' }}
-        href={ page.link }
       >
         {page.name}
       </Button>
@@ -145,7 +142,7 @@ function Navigation({ contractorProfile, updateContractorProfile }) {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            onClick={() => history.push('/')}
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },

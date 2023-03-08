@@ -2,39 +2,35 @@ import { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { UserContext } from "../context/user";
 import { ProfileContext } from "../context/profile";
-import Navigation from "./Navigation";
-import JobsNeeded from "./JobsNeeded";
+import ContractorDashboard from "./ContractorDashboard";
 import Dashboard from "./Dashboard";
+import JobDetail from "./JobDetail";
+import JobsNeeded from "./JobsNeeded";
+import Login from "./Login";
+import Navigation from "./Navigation";
 import Profile from "./Profile";
 import PropertyDetail from "./PropertyDetail";
-import JobDetail from "./JobDetail";
-import Welcome from "./Welcome";
-import Login from "./Login";
 import SignUp from "./SignUp";
-import ContractorDashboard from "./ContractorDashboard";
+import Welcome from "./Welcome";
 
 function App() {
+  // State
   const { user, setUser } = useContext(UserContext);
   const { profile, setProfile } = useContext(ProfileContext);
   const [errors, setErrors] = useState(null);
   const [jobs, setJobs] = useState([]);
-  //const [profile, setProfile] = useState(null);
   const [contractorProfile, setContractorProfile] = useState(null);
-  // const [userJobs, setUserJobs] = useState([]);
   const [properties, setProperties] = useState([]);
-  // const [userProperties, setUserProperties] = useState([]);
 
-  // Authorized user fetch
+  // Fetches data after fetching whether user is authorized
   useEffect(() => {
     fetch('/authorized_user')
     .then(res => {
       if(res.ok){
         res.json().then(user => {
           setUser(user);
-          fetchJobs();
-          fetchProperties();
           setProfile(profile ? profile : user.profile)
-          setContractorProfile(contractorProfile ? contractorProfile : user.contractor_profile) // can make context
+          setContractorProfile(contractorProfile ? contractorProfile : user.contractor_profile)
         })
       } else {
         setUser(null);
@@ -43,7 +39,7 @@ function App() {
     })
   },[setUser, profile, contractorProfile, setProfile])
 
-  // Can be fetched without user context
+  // Fetch dependent on whether a user is or is not logged in
   useEffect(() => { 
     if(!user){
       fetch('/sample-jobs')
@@ -54,10 +50,20 @@ function App() {
           res.json().then(data => setErrors(data.error))
         }
       })
+    } else if (user) {
+      fetch(`/jobs`)
+      .then(res => {
+        if(res.ok){
+          res.json().then(setJobs)
+        }else {
+          res.json().then(data => setErrors(data.error))
+        }
+      })
     }
   }, [user]);
-
-  const fetchProperties = () => {
+  
+  // Can be fetched without user (these are a properties on the map that show up to non-signed in users)
+  useEffect(() => { 
     fetch(`/properties`)
     .then(res => {
       if(res.ok){
@@ -66,56 +72,54 @@ function App() {
         res.json().then(data => setErrors(data.error))
       }
     })
-  };
+  }, []);
 
-  // Require user context to fetch
-  const fetchJobs = () => {
-    fetch(`/jobs`)
-    .then(res => {
-      if(res.ok){
-        res.json().then(setJobs)
-      }else {
-        res.json().then(data => setErrors(data.error))
-      }
-    })
-  };
 
+  // Sets the user profile to profice context
   const updateProfile = (user) => {
     setProfile(user.profile);
   };
 
-  const updateContractorProfile = (user) => {
-    setContractorProfile(user.contractor_profile);
+  // Updates states of whether user has a contractor profile
+  const updateContractorProfile = (contractor_profile) => {
+    setContractorProfile(contractor_profile);
   };
 
+  // Adds property to all property list (for map display) 
   const addPropertyToList = (property) => {
     setProperties([...properties, property])
   };
 
+  // Deletes property from map if it is deleted from user dashboard
   const deletePropertyFromList = (id) => {
     const newProperties = properties.filter(property => property.id !== id);
     setProperties(newProperties);
   }
 
+  // Adds job to job list 
   const addJob = (job) => {
     setJobs([...jobs, job]);
   };
 
+  // Removes job from job list
   const deleteJob = (id) => {
     const newJobs = jobs.filter(job => job.id !== id);
     setJobs(newJobs);
   }
 
+  // Edits job content
   const editJob = (editJob) => {
     const filteredJobs = jobs.filter(job => job.id !== editJob.id);
     setJobs([...filteredJobs, editJob]);
   }
 
+  // Loads if there are sever errors
   if(errors) return <h1>{errors}</h1>
 
+  // Shows the below routes to the user if they are not logged in
   if(!user) return (
     <BrowserRouter>
-      <Navigation />
+      <Navigation contractorProfile={ contractorProfile } updateContractorProfile={ updateContractorProfile }/>
         <div className="App">
           <Switch>
             <Route path='/auth' component={() => {
@@ -127,7 +131,7 @@ function App() {
               <JobDetail deleteJob={ deleteJob } editJob={ editJob }/>
             </Route>
             <Route path="/jobs-needed">
-              <JobsNeeded jobs={ jobs } deleteJob={ deleteJob } editJob={ editJob } contractorProfile={ contractorProfile }/>
+              <JobsNeeded jobs={ jobs } properties={ properties } deleteJob={ deleteJob } editJob={ editJob } contractorProfile={ contractorProfile }/>
             </Route>
             <Route path="/login">
               <Login updateContractorProfile={updateContractorProfile}/>
@@ -139,21 +143,24 @@ function App() {
               <Welcome />
             </Route>
             <Route path="/">
-              <Login updateContractorProfile={updateContractorProfile} />
+              <Welcome />
+              {/* <Login updateContractorProfile={updateContractorProfile} /> */}
             </Route>
           </Switch>
         </div>
     </BrowserRouter>
   )
-//contractorJobs
+
+  // Shows the below 
   if(!jobs) return <h1>No Jobs</h1>
 
+  // Renders the below to users that are signed in
   return (
       <BrowserRouter>
         <Navigation contractorProfile={ contractorProfile } updateContractorProfile={ updateContractorProfile }/>
         <div className="App">
           <Switch>
-            <Route path="/contractor-dashboard">
+            <Route path="/contractor-dashboard" title="Contractor Dashboard | JINDAH">
               <ContractorDashboard addJob={addJob} contractorProfile={ contractorProfile }/>
             </Route>
             <Route path="/dashboard">
@@ -172,7 +179,7 @@ function App() {
               <Profile profile={ profile } updateProfile={ updateProfile } />
             </Route>
             <Route path="/property/:id">
-              <PropertyDetail />
+              <PropertyDetail editJob={ editJob } deleteJob={ deleteJob }/>
             </Route>
             <Route path="/welcome">
               <Welcome />

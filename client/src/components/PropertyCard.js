@@ -1,11 +1,7 @@
-import * as React from 'react';
 import { createElement } from 'react';
 import { Card, Box, Typography, Divider } from '@mui/material';
 import { Link } from 'react-router-dom';
-
-import cartouche from './cartouche.png';
-import cartoucheDark from './cartoucheDark.png';
-
+import cartouche from '../assets/cartouche.png';
 
 function PropertyCard({ icon, title, subtitle_one, subtitle_two, to, children }){
     return (
@@ -28,9 +24,7 @@ function PropertyCard({ icon, title, subtitle_one, subtitle_two, to, children })
                     padding: '16px',
                     background: theme =>
                         `url(${
-                            theme.palette.mode === 'dark'
-                                ? cartoucheDark
-                                : cartouche
+                            cartouche
                         }) no-repeat`,
                     display: 'flex',
                     justifyContent: 'space-between',

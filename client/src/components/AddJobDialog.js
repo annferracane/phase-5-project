@@ -1,71 +1,78 @@
 import { useState, useEffect } from "react";
-import {Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ActionAlerts from './ActionAlerts';
 import LaborTags from './LaborTags';
 
 function AddJobDialog({ property, addJob }) {
-    const [open, setOpen] = useState(false);
-    const [severity, setSeverity] = useState();
-    const [alertMessages, setAlertMessages] = useState([]);
-    const [laborCategories, setLaborCategories] = useState([]);
-  
-    useEffect(() => {
-      fetch("/labor_categories")
-        .then((res) => res.json())
-        .then((labor_categories) => setLaborCategories(labor_categories));
-    }, []);
+  // State and other variables
+  const [open, setOpen] = useState(false);
+  const [severity, setSeverity] = useState();
+  const [alertMessages, setAlertMessages] = useState([]);
+  const [laborCategories, setLaborCategories] = useState([]);
 
-    const timelines = ['ASAP', 'Within the week', 'Within the month', 'Within 3 months', 'Within 6 months', 'Seeking Input / Not Urgent'];
-    const timelineArray = timelines.map(timeline => <MenuItem key={timeline} value={timeline}>{timeline}</MenuItem>)
+  const timelines = ['ASAP', 'Within the week', 'Within the month', 'Within 3 months', 'Within 6 months', 'Seeking Input / Not Urgent'];
+  const timelineArray = timelines.map(timeline => <MenuItem key={timeline} value={timeline}>{timeline}</MenuItem>)
+  const [formData, setFormData] = useState({
+      title: '',
+      description: '',
+      timeline: '',
+      labor_categories: []
+    });
+    
+  const { title, description, timeline, labor_categories} = formData;
 
-    const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        timeline: '',
-        labor_categories: []
-      });
-      
-    const { title, description, timeline, labor_categories} = formData;
+  // Fetches labor categories for tags in autocomplete 
+  useEffect(() => {
+    fetch("/labor_categories")
+      .then((res) => res.json())
+      .then((labor_categories) => setLaborCategories(labor_categories));
+  }, []);
 
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
-  
-    const deleteLaborTag = (laborTagToDelete) => {
-      const newLaborTags = labor_categories.filter(laborTag => laborTag.id !== laborTagToDelete.id);
-      setFormData({ ...formData, labor_categories: newLaborTags });
-    }
+  // Handles dialog open
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-    const handleLaborCategoryChange = (value) => {
-      if(value != null ) {
-            fetch(`/labor-category-lookup/${value}`)
-            .then(res => {
-                if(res.ok){
-                    res.json().then(labor_category_id => {
-                        const laborObj = {
-                          id: labor_category_id,
-                          name: value
-                        }
-                        const newLaborTags = [...labor_categories, laborObj];
-                        setFormData({ ...formData, labor_categories: newLaborTags });
-                    })
-                } else {
-                    res.json().then(json => console(Object.entries(json.errors)));
-                }
-            })
-        }
-    };
+  // Handles dialog close
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData({ ...formData, [name]: value });
+  // Handles deletion of labor category tag
+  const deleteLaborTag = (laborTagToDelete) => {
+    const newLaborTags = labor_categories.filter(laborTag => laborTag.id !== laborTagToDelete.id);
+    setFormData({ ...formData, labor_categories: newLaborTags });
   }
 
+  // Handles change of labor category autocomplete
+  const handleLaborCategoryChange = (value) => {
+    if(value != null ) {
+          fetch(`/labor-category-lookup/${value}`)
+          .then(res => {
+              if(res.ok){
+                  res.json().then(labor_category_id => {
+                      const laborObj = {
+                        id: labor_category_id,
+                        name: value
+                      }
+                      const newLaborTags = [...labor_categories, laborObj];
+                      setFormData({ ...formData, labor_categories: newLaborTags });
+                  })
+              } else {
+                  res.json().then(json => console(Object.entries(json.errors)));
+              }
+          })
+      }
+  };
+
+  // Handles other form changes with states
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  }
+
+  // Handles form submit
   const handleSubmit = (e) => {
       e.preventDefault();
       
@@ -105,21 +112,17 @@ function AddJobDialog({ property, addJob }) {
                       if(res.ok){
                         return new Promise(() => {
                           res.json().then(labor_category => {
-                            console.log(labor_category);
                             resolve();
                           })
                         })
                       } else {
                         console.log("Error: job labor categories POST")
                       }
-
                     })
                   })
                 })
               )
               .then(() => {
-                console.log("Job labor categories added to job.");
-
                 setFormData({
                   title: '',
                   description: '',
@@ -138,7 +141,7 @@ function AddJobDialog({ property, addJob }) {
               setAlertMessages(Object.entries(json.errors));
           });
         }
-    })
+     })
     };
   
   // Show loading if laborCategories is null

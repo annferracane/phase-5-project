@@ -6,7 +6,8 @@ import PropertyCard from "./PropertyCard";
 import BusinessIcon from '@mui/icons-material/Business';
 import HomeIcon from '@mui/icons-material/Home';
 
-function PropertyDetail() {
+function PropertyDetail({ editJob, deleteJob }) {
+    // State and other variables
     const params = useParams();
     const id = params.id;
     const [property, setProperty] = useState(null);
@@ -24,7 +25,11 @@ function PropertyDetail() {
         fetch(`/properties/${id}/jobs`)
         .then((r) => r.json())
         .then((propertyJobs) => setPropertyJobs(propertyJobs));
-    }, [id]);
+    }, [id, property]);
+
+    const editJobDetailDisplay = (job, labor_categories) => {
+        setProperty(job.property);
+    }
 
     // Show loading if property or propertyjobs is null
     if(!property || !propertyJobs) { return <h2>Loading...</h2> }
@@ -48,7 +53,7 @@ function PropertyDetail() {
                         </Grid>
                         <Grid item xs={12}>
                             <CardHeader title={ "Jobs" } />
-                            <Jobs jobs={ propertyJobs }/>
+                            <Jobs jobs={ propertyJobs } editJob={ editJob } deleteJob={ deleteJob } editJobDetailDisplay={editJobDetailDisplay}/>
                         </Grid>
                     </Grid>
                 </Grid>

@@ -1,37 +1,15 @@
-import * as React from 'react';
 import { useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { UserContext } from "../context/user";
-import Avatar from '@mui/material/Avatar';
-import ActionAlerts from './ActionAlerts';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import Chip from '@mui/material/Chip';
-import GoogleIcon from '@mui/icons-material/Google';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="/">
-        JINDAH
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { Avatar, Box, Button, Container, Chip, CssBaseline, Divider, Grid, Link, TextField, Typography } from '@mui/material';
+import ActionAlerts from './ActionAlerts';
+import Copyright from './Copyright';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import GoogleIcon from '@mui/icons-material/Google';
 
 function SignUp() {
+  // State and other variables
   const { setUser } = useContext(UserContext);
   const [severity, setSeverity] = useState();
   const [alertMessages, setAlertMessages] = useState([]);
@@ -41,20 +19,23 @@ function SignUp() {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
-    // should I do password validation?
+    // password validation for second field, timepending
   });
 
   const { email, password } = formData;
 
+  // Google login handler
   const handleGoogleLogin = () => {
     history.push('/auth')
   };
 
+  // Form handler for signup form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // Submit handler
   const handleSubmit = (e) => {
     e.preventDefault();
 

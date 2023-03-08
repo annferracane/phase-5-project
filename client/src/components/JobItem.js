@@ -1,28 +1,21 @@
 import { useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { UserContext } from "../context/user";
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
+import { Avatar, Box, Button, Card, CardHeader, CardContent, CardActions, Stack, Typography } from '@mui/material';
+import EditJobDialog from './EditJobDialog';
 import LaborTags from './LaborTags';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import PanToolIcon from '@mui/icons-material/PanTool';
 import DoNotTouchIcon from '@mui/icons-material/DoNotTouch';
-import EditJobDialog from './EditJobDialog';
 import LaunchIcon from '@mui/icons-material/Launch';
 
-
 function JobItem({ job, jobLaborCategories, addJob, deleteJob, editJob, editJobDetailDisplay, hideSeeJobButton, contractorProfile, releaseJob }) {
+  // State
   const { user } = useContext(UserContext);
   const history = useHistory();
   const [isAccepted, setIsAccepted] = useState(job.is_accepted);
 
+  // Handle job delete
   const handleDelete = () => {    
     fetch(`/jobs/${job.id}`, { // need this to be publically available 
       method: 'DELETE',
@@ -40,23 +33,15 @@ function JobItem({ job, jobLaborCategories, addJob, deleteJob, editJob, editJobD
     });
   }
 
+  // Handle accept/release job actions
   const handleAcceptRelease = (e) => {
-
-    let acceptedVal = true;
-    if (e.target.value === 'release'){
-      acceptedVal = false;
-    }
-
-    let contractor_id = null;
-    if (e.target.value === 'accept'){
-      contractor_id = contractorProfile.id;
-    }
+    const acceptedVal = e.target.value === 'release' ? false : true;
+    const contractor_id = e.target.value === 'release' ? null : contractor_id;
 
     const jobUpdate = {
       is_accepted: acceptedVal,
       contractor_profile_id: contractor_id
-      // Logic to add contractor id or set to null
-  };
+    };
 
     fetch(`/jobs/${job.id}`, { 
       method: 'PATCH', 
@@ -82,24 +67,28 @@ function JobItem({ job, jobLaborCategories, addJob, deleteJob, editJob, editJobD
     });
   }
 
+  // Accept button
   const acceptButton = (
     <Button variant="outlined" color="success" value="accept" startIcon={<PanToolIcon />} onClick={handleAcceptRelease}>
       Accept
     </Button>
   );
 
+  // Release Button
   const releaseButton = (
     <Button variant="outlined" color="warning" value="release" startIcon={<DoNotTouchIcon />} onClick={handleAcceptRelease}>
       Release
     </Button>
   );
 
+  // Logic to display correct button based on job's status
   const acceptReleaseButtons = (
     <>
       { isAccepted ? releaseButton : acceptButton }
     </>
   );
 
+  // Logic to render edit/delete buttons based on user login
   const editDeleteButtons = (
     <>
       { isAccepted ? releaseButton : null }
@@ -110,8 +99,9 @@ function JobItem({ job, jobLaborCategories, addJob, deleteJob, editJob, editJobD
     </>
   );
 
+  // Renders "see job" button
   const seeJobButton = (
-    <Button variant="outlined" color="primary" startIcon={<LaunchIcon />} href={`/job/${job.id}`} >
+    <Button variant="outlined" color="primary" startIcon={<LaunchIcon />} onClick={() => history.push(`/job/${job.id}`)} >
       See Job
     </Button>
   );
@@ -120,6 +110,7 @@ function JobItem({ job, jobLaborCategories, addJob, deleteJob, editJob, editJobD
   // Show loading if job is null
   if(!job ) { return <h2>Loading...</h2> }
 
+  // Job timeline
   const job_timeline_amended = (
     <><b>Needed: </b> {job.timeline}</>
   )

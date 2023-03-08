@@ -2,18 +2,12 @@ import { useState, useContext } from "react";
 import { UserContext } from "../context/user";
 import { ProfileContext } from "../context/profile";
 import { useHistory } from 'react-router-dom';
-import ActionAlerts from './ActionAlerts';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Avatar, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material';
+import ActionAlerts from './ActionAlerts';
 
 function Profile() {
+  // State and other variables
   const { user } = useContext(UserContext);
   const { profile, setProfile } = useContext(ProfileContext);
   const [severity, setSeverity] = useState();
@@ -29,13 +23,14 @@ function Profile() {
   });
 
   const { first_name, last_name, image } = formData;
-
  
+  // Change handlers for form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   }
 
+  // Submit handler
   const handleSubmit = (e) => {
     e.preventDefault();
     

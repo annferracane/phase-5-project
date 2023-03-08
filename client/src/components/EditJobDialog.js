@@ -1,84 +1,78 @@
 import { useState, useEffect } from "react";
-import ActionAlerts from './ActionAlerts';
-import Autocomplete from '@mui/material/Autocomplete';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import Grid from '@mui/material/Grid';
-import DialogTitle from '@mui/material/DialogTitle';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
+import { Autocomplete, Button, FormControl, Grid, InputLabel, MenuItem, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Select, TextField} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-
+import ActionAlerts from './ActionAlerts';
 import LaborTags from './LaborTags';
 
 function EditJobDialog({ job, editJob, editJobDetailDisplay }) {
-    const [open, setOpen] = useState(false);
-    const [severity, setSeverity] = useState();
-    const [alertMessages, setAlertMessages] = useState([]);
-    const [laborCategories, setLaborCategories] = useState([]);
+  // State and other variables
+  const [open, setOpen] = useState(false);
+  const [severity, setSeverity] = useState();
+  const [alertMessages, setAlertMessages] = useState([]);
+  const [laborCategories, setLaborCategories] = useState([]);
+
+  const timelines = ['ASAP', 'Within the week', 'Within the month', 'Within 3 months', 'Within 6 months', 'Seeking Input / Not Urgent'];
+  const timelineArray = timelines.map(timeline => <MenuItem key={timeline} value={timeline}>{timeline}</MenuItem>)
+
+  const [formData, setFormData] = useState({
+    title: job.title,
+    description: job.description,
+    timeline: job.timeline,
+    labor_categories: job.labor_categories
+  });
   
-    useEffect(() => {
-      fetch("/labor_categories")
-        .then((res) => res.json())
-        .then((labor_categories) => setLaborCategories(labor_categories));
-    }, []);
+  const { title, description, timeline, labor_categories} = formData;
 
-    const timelines = ['ASAP', 'Within the week', 'Within the month', 'Within 3 months', 'Within 6 months', 'Seeking Input / Not Urgent'];
-    const timelineArray = timelines.map(timeline => <MenuItem key={timeline} value={timeline}>{timeline}</MenuItem>)
+  // Fetches labor categories for the autocomplete section of form
+  useEffect(() => {
+    fetch("/labor_categories")
+      .then((res) => res.json())
+      .then((labor_categories) => setLaborCategories(labor_categories));
+  }, []);
 
-    const [formData, setFormData] = useState({
-        title: job.title,
-        description: job.description,
-        timeline: job.timeline,
-        labor_categories: job.labor_categories
-      });
-      
-    const { title, description, timeline, labor_categories} = formData;
+  // Open and close handlers for the edit dialog box
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
-  
-    const deleteLaborTag = (laborTagToDelete) => {
-      const newLaborTags = labor_categories.filter(laborTag => laborTag.id !== laborTagToDelete.id);
-      setFormData({ ...formData, labor_categories: newLaborTags });
-    }
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    const handleLaborCategoryChange = (value) => {
-      if(value != null ) {
-            fetch(`/labor-category-lookup/${value}`)
-            .then(res => {
-                if(res.ok){
-                    res.json().then(labor_category_id => {
-                        const laborObj = {
-                          id: labor_category_id,
-                          name: value
-                        }
-                        const newLaborTags = [...labor_categories, laborObj];
-                        setFormData({ ...formData, labor_categories: newLaborTags });
-                    })
-                } else {
-                    res.json().then(json => console(Object.entries(json.errors)));
-                }
-            })
-        }
-    };
-
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData({ ...formData, [name]: value });
+  // Delete handler
+  const deleteLaborTag = (laborTagToDelete) => {
+    const newLaborTags = labor_categories.filter(laborTag => laborTag.id !== laborTagToDelete.id);
+    setFormData({ ...formData, labor_categories: newLaborTags });
   }
 
+  // Change handler for labor category autocomplete
+  const handleLaborCategoryChange = (value) => {
+    if(value != null ) {
+          fetch(`/labor-category-lookup/${value}`)
+          .then(res => {
+              if(res.ok){
+                  res.json().then(labor_category_id => {
+                      const laborObj = {
+                        id: labor_category_id,
+                        name: value
+                      }
+                      const newLaborTags = [...labor_categories, laborObj];
+                      setFormData({ ...formData, labor_categories: newLaborTags });
+                  })
+              } else {
+                  res.json().then(json => console(Object.entries(json.errors)));
+              }
+          })
+      }
+  };
+
+  // Change handle for remaining form elements
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  }
+
+  // Submit form handler
   const handleSubmit = (e) => {
       e.preventDefault();
       
@@ -148,7 +142,7 @@ function EditJobDialog({ job, editJob, editJobDetailDisplay }) {
         } else {
             console.log("Error: job labor categories POST")
         }
-    })
+      })
     };
   
   // Show loading if jobs is null

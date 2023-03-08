@@ -1,12 +1,13 @@
-import * as React from 'react';
 import { useState, useContext } from "react";
 import { UserContext } from "../context/user";
 import { Avatar, Box, Button, Card, ListItem, ListItemSecondaryAction, ListItemAvatar, ListItemText } from '@mui/material';
 
 function Comment({ comment, deleteJobComment }) {
+    // State
     const { user } = useContext(UserContext);
     const [userId] = useState(user ? user.id : null);
 
+    // Delete comment handler
     const handleDelete = () => {
         fetch(`/users/${user.id}/job_comments/${comment.id}`, {
             method: 'DELETE',
@@ -23,11 +24,12 @@ function Comment({ comment, deleteJobComment }) {
           })
     }
 
+    // Creates a delete button on the comment (will later only show if the user is the creator of the comment)
     const deleteButton = (
         <Button variant="contained" onClick={ handleDelete }>Delete</Button>
     );
 
-    // Show loading if comment is null
+   // Show loading if comment is null
    if(!comment) { return <h3>Loading...</h3> }
 
     return (

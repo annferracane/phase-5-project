@@ -3,7 +3,7 @@ import { List, Stack } from '@mui/material';
 import CustomListItem from "./CustomListItem";
 
 function Properties({ userProperties, addJob, deletePropertyFromList }) {
-
+    // Styled array of properties
     const propertyArray = userProperties.map(property => <CustomListItem key={'property-' + property.id} itemType={ 'property' } item={property} passedFunctions={[addJob, deletePropertyFromList]}/>)
 
     // Show loading if userProperties is null
@@ -16,7 +16,6 @@ function Properties({ userProperties, addJob, deletePropertyFromList }) {
             </Stack>
         </List>
     )
-
 };
 
 export default Properties;

@@ -1,88 +1,82 @@
-//Consolidate
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../context/user";
 import { useHistory } from 'react-router-dom';
+import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { FormControl, Grid, InputLabel, MenuItem, TextField, Select, Typography } from '@mui/material';
 import ActionAlerts from './ActionAlerts';
-import Autocomplete from '@mui/material/Autocomplete';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import Grid from '@mui/material/Grid';
-import DialogTitle from '@mui/material/DialogTitle';
-import Typography from '@mui/material/Typography';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-
 import LaborTags from './LaborTags';
 
+
 function AddContractorProfile({ updateContractorProfile }) {
-    const { user } = useContext(UserContext); 
-    const [open, setOpen] = useState(false);
-    const [severity, setSeverity] = useState();
-    const [alertMessages, setAlertMessages] = useState([]);
-    const [laborCategories, setLaborCategories] = useState([]);
-    const history = useHistory();
+  // State and other variables
+  const { user } = useContext(UserContext); 
+  const [open, setOpen] = useState(false);
+  const [severity, setSeverity] = useState();
+  const [alertMessages, setAlertMessages] = useState([]);
+  const [laborCategories, setLaborCategories] = useState([]);
+  const history = useHistory();
+
+  const distances = [10, 25, 50, 100, 250, 300, 500];
+  const distanceArray = distances.map(distance => <MenuItem key={`distance-${distance}`} value={`${distance}`}>{ distance }</MenuItem>)
+  const [formData, setFormData] = useState({
+      zip: '',
+      travel_radius_miles: '',
+      labor_categories: []
+    });
+    
+  const { zip, travel_radius_miles, labor_categories} = formData;
   
-    useEffect(() => {
-      fetch("/labor_categories")
-        .then((res) => res.json())
-        .then((labor_categories) => setLaborCategories(labor_categories));
-    }, []);
+  // Fetches labor categories for tags
+  useEffect(() => {
+    fetch("/labor_categories")
+      .then((res) => res.json())
+      .then((labor_categories) => setLaborCategories(labor_categories));
+  }, []);
 
-    const distances = [10, 25, 50, 100, 250, 300, 500];
-    const distanceArray = distances.map(distance => <MenuItem key={`distance-${distance}`} value={`${distance}`}>{ distance }</MenuItem>)
+  // Open dialog Handler
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-    const [formData, setFormData] = useState({
-        zip: '',
-        travel_radius_miles: '',
-        labor_categories: []
-      });
-      
-    const { zip, travel_radius_miles, labor_categories} = formData;
+  // Close dialog handler
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
-  
-    const deleteLaborTag = (laborTagToDelete) => {
-      const newLaborTags = labor_categories.filter(laborTag => laborTag.id !== laborTagToDelete.id);
-      setFormData({ ...formData, labor_categories: newLaborTags });
-    }
-
-    const handleLaborCategoryChange = (value) => {
-      if(value != null ) {
-            fetch(`/labor-category-lookup/${value}`)
-            .then(res => {
-                if(res.ok){
-                    res.json().then(labor_category_id => {
-                        const laborObj = {
-                          id: labor_category_id,
-                          name: value
-                        }
-                        const newLaborTags = [...labor_categories, laborObj];
-                        setFormData({ ...formData, labor_categories: newLaborTags });
-                    })
-                } else {
-                    res.json().then(json => console(Object.entries(json.errors)));
-                }
-            })
-        }
-    };
-
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData({ ...formData, [name]: value });
+  // Delete labor tag handler
+  const deleteLaborTag = (laborTagToDelete) => {
+    const newLaborTags = labor_categories.filter(laborTag => laborTag.id !== laborTagToDelete.id);
+    setFormData({ ...formData, labor_categories: newLaborTags });
   }
 
+  // Handles category change autocomplete in form
+  const handleLaborCategoryChange = (value) => {
+    if(value != null ) {
+          fetch(`/labor-category-lookup/${value}`)
+          .then(res => {
+              if(res.ok){
+                  res.json().then(labor_category_id => {
+                      const laborObj = {
+                        id: labor_category_id,
+                        name: value
+                      }
+                      const newLaborTags = [...labor_categories, laborObj];
+                      setFormData({ ...formData, labor_categories: newLaborTags });
+                  })
+              } else {
+                  res.json().then(json => console(Object.entries(json.errors)));
+              }
+          })
+      }
+  };
+
+  // Handles other form field changes (text fields and select)
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  }
+
+  // Handles form submit
   const handleSubmit = (e) => {
       e.preventDefault();
       
@@ -118,7 +112,6 @@ function AddContractorProfile({ updateContractorProfile }) {
                       if(res.ok){
                         return new Promise(() => {
                           res.json().then(labor_category => {
-                            console.log(labor_category);
                             resolve();
                           })
                         })
@@ -149,7 +142,7 @@ function AddContractorProfile({ updateContractorProfile }) {
               setAlertMessages(Object.entries(json.errors));
           });
         }
-    })
+      })
     };
   
   // Show loading if laborCategories is null
@@ -157,12 +150,9 @@ function AddContractorProfile({ updateContractorProfile }) {
 
   return (
     <div>
-        <MenuItem onClick={handleClickOpen}>
-            <Typography textAlign="center">Become a Contractor</Typography>
-        </MenuItem>
-      {/* <Button variant="outlined" color="success" onClick={handleClickOpen} startIcon={<AddCircleIcon />}>
-        Add Job
-      </Button> */}
+      <MenuItem onClick={handleClickOpen}>
+          <Typography textAlign="center">Become a Contractor</Typography>
+      </MenuItem>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create a Contractor Profile</DialogTitle>
         <DialogContent>

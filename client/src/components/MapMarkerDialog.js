@@ -1,27 +1,22 @@
-//Consolidate
 import { useState } from "react";
 import { Marker } from '@react-google-maps/api';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import JobList from "./JobList";
 
 function MapMarkerDialog({ property }) {
-    const [open, setOpen] = useState(false);
-    const [jobs] = useState(property ? property.jobs : []);
+  // State and other variables
+  const [open, setOpen] = useState(false);
+  const [jobs] = useState(property ? property.jobs : []);
+  const propLatLng = {lat: property.lat, lng: property.lng }
 
-    const propLatLng = {lat: property.lat, lng: property.lng }
+  // Handlers to open and close the map pin dialog box
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
+  const handleClose = () => {
+    setOpen(false);
+  };
   
   // Show loading if property is null
   if(!property) { return <h2>Loading...</h2> }

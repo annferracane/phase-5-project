@@ -2,23 +2,24 @@ import JobItem from './JobItem';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 
-function Jobs({ jobs, addJob, releaseJob, deleteJob, editJob, contractorProfile }) {
-
+function Jobs({ jobs, addJob, releaseJob, deleteJob, editJob, contractorProfile, editJobDetailDisplay }) {
+    // Job cards to render if user is not a contractor
     const jobCards = jobs.map(job => {
         return (
             <Grid item xs={12} key={job.id} >
-                <JobItem job={ job } jobLaborCategories={ job.labor_categories } deleteJob={ deleteJob } editJob={ editJob } />
+                <JobItem job={ job } jobLaborCategories={ job.labor_categories } deleteJob={ deleteJob } editJob={ editJob } editJobDetailDisplay={ editJobDetailDisplay } />
             </Grid>
         )
-    } )
+    });
 
+    // Job cards to render if user is a contractor
     const contractorJobCards = jobs.map(job => {
         return (
             <Grid item xs={12} key={job.id} >
-                <JobItem job={ job } jobLaborCategories={ job.labor_categories } contractorProfile={ contractorProfile } deleteJob={ deleteJob } addJob={ addJob } releaseJob={ releaseJob }/>
+                <JobItem job={ job } jobLaborCategories={ job.labor_categories } contractorProfile={ contractorProfile } deleteJob={ deleteJob } addJob={ addJob } releaseJob={ releaseJob } />
             </Grid>
         )
-    } )
+    });
 
     // Show loading if jobs is null
    if(!jobs) { return <h2>Loading...</h2> }
@@ -30,7 +31,6 @@ function Jobs({ jobs, addJob, releaseJob, deleteJob, editJob, contractorProfile 
             </Grid>
         </Container>
     )
-
-}
+};
 
 export default Jobs;

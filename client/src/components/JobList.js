@@ -3,7 +3,7 @@ import { List, Stack } from '@mui/material';
 import CustomListItem from "./CustomListItem";
 
 function JobList({ jobs, deleteJob }) {
-
+    // Array of styled jobs to display
     const jobArray = jobs.map(job => <CustomListItem key={'job-' + job.id} itemType={ 'job' } item={job} passedFunctions={[deleteJob]} />)
 
     // Show loading if jobs is null

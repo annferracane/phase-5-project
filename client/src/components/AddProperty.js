@@ -1,19 +1,11 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../context/user";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import { Box, Button, Container, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import ActionAlerts from './ActionAlerts';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import FormControl from '@mui/material/FormControl';
-import Grid from '@mui/material/Grid';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
 
 function AddProperty({addPropertyToList}) {
+    // State and other variables
     const { user } = useContext(UserContext);
     const [severity, setSeverity] = useState();
     const [alertMessages, setAlertMessages] = useState([]);
@@ -34,23 +26,25 @@ function AddProperty({addPropertyToList}) {
         property_category: ''
       });
       
-
     const { street_address_1, street_address_2, city, state_abbr, zip, property_category } = formData;
 
+    // Handles changes to form
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     }
 
+    // Handles form submit
     const handleSubmit = (e) => {
         e.preventDefault();
 
         const search_addr = street_address_1 + ', ' + city + ', ' + state_abbr + ' ' + zip; 
-
+        // Fetches Google Places API to convert address into lat/lng for later map usage
         fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${search_addr}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`)
           .then(res => {
               if(res.ok){
                   res.json().then(data => {
+                    // Pulls lat/lng from API
                     const gLat = data.results[0].geometry.location.lat;
                     const gLng = data.results[0].geometry.location.lng;
 
@@ -207,7 +201,6 @@ function AddProperty({addPropertyToList}) {
             </Container>
         </ThemeProvider>
     )
-
 }
 
 export default AddProperty;

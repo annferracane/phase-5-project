@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useHistory } from 'react-router-dom';
 import { purple, orange, green } from '@mui/material/colors';
 import { Avatar, Box, Button, Card, IconButton, ListItem, ListItemSecondaryAction, ListItemAvatar, ListItemText, Stack } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -8,8 +9,9 @@ import HomeIcon from '@mui/icons-material/Home';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import AddJobDialog from './AddJobDialog';
 
-
 function CustomListItem({ itemType, item, passedFunctions }) {
+    // State and other variables
+    const history = useHistory();
     const [itemData, setItemData] = useState({
         primaryText: '',
         secondaryText: '',
@@ -20,7 +22,7 @@ function CustomListItem({ itemType, item, passedFunctions }) {
 
     const { avatar, primaryText, secondaryText, buttonType, buttonHref } = itemData;
 
-    
+    // Fetch data depending on if list item is a property or job
     useEffect(() => {
         if (itemType === 'property') {
             setItemData({
@@ -41,6 +43,7 @@ function CustomListItem({ itemType, item, passedFunctions }) {
         }
       },[item, itemType, passedFunctions])
     
+    // Delete job handler
     const handleDeleteJob = () => {    
         fetch(`/jobs/${item.id}`, {
             method: 'DELETE',
@@ -57,6 +60,7 @@ function CustomListItem({ itemType, item, passedFunctions }) {
         });
     }
 
+    // Delete property handler
     const handleDeleteProperty = () => {    
         fetch(`/properties/${item.id}`, {
             method: 'DELETE',
@@ -73,8 +77,8 @@ function CustomListItem({ itemType, item, passedFunctions }) {
         });
     }
 
-    // Show loading if jobs is null
-   if(!itemData) { return <h3>Loading...</h3> }
+    // Show loading if item passed through props is null
+   if(!item) { return <h3>Loading...</h3> }
 
     return (
         <Card sx={{ flex: 1 }}>
@@ -102,13 +106,12 @@ function CustomListItem({ itemType, item, passedFunctions }) {
                         >
                             { itemType === "job" && passedFunctions[0] ? <Button size="small" variant="text" disabled> { item.is_accepted ? "Accepted " : "Still Open" } </Button> : null }
                             { buttonType }
-                            <IconButton aria-label="share" color="primary" href={ buttonHref }><LaunchIcon /></IconButton>
+                            <IconButton aria-label="share" color="primary" onClick={ () => history.push(buttonHref) }><LaunchIcon /></IconButton>
                         </Stack>
                     </Box>
                 </ListItemSecondaryAction>
             </ListItem>
         </Card>
-        
     );
 };
 

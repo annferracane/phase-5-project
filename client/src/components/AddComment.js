@@ -1,26 +1,26 @@
 import * as React from 'react';
 import { useState, useContext } from "react";
 import { UserContext } from "../context/user";
-import {Avatar, Box, Button, Card, Grid, TextField } from '@mui/material';
+import { Avatar, Box, Button, Card, Grid, TextField } from '@mui/material';
 import ActionAlerts from './ActionAlerts';
 
-
 function AddComment({ job, addJobComment }) {
+    // State and other variables
     const { user } = useContext(UserContext);
     const [severity, setSeverity] = useState();
     const [alertMessages, setAlertMessages] = useState([]);
-
     const [formData, setFormData] = useState({
         comment_text: ''
       });
-    
     const { comment_text } = formData;
 
+    // Comment change handler
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     }
 
+    // Submit comment handler
     const handleSubmit = (e) => {
         e.preventDefault();
         
@@ -41,7 +41,7 @@ function AddComment({ job, addJobComment }) {
                     setFormData({
                         comment_text: ''
                     });
-                    // Add job comment to client
+                    // Adds job comment to client
                     addJobComment(comment);
                 })
             } else {
@@ -54,14 +54,15 @@ function AddComment({ job, addJobComment }) {
       };
 
     // Show loading if user is null
-   if(!user) { return <h2>Loading...</h2> }
+    if(!user) { return <h2>Loading...</h2> }
 
+    // Build avatar depending on whether user has one in profile
     let avatarSrc = "";
     if(user) {
-    avatarSrc = <Avatar alt={ "" } src={ "" } />
-    if(user.profile) {
-        avatarSrc = <Avatar sx={{ mt: 1, mb: 2 }} alt={ user.profile.full_name } src={ user.profile.image } />
-    }
+        avatarSrc = <Avatar alt={ "" } src={ "" } />
+        if(user.profile) {
+            avatarSrc = <Avatar sx={{ mt: 1, mb: 2 }} alt={ user.profile.full_name } src={ user.profile.image } />
+        }
     }
 
     return (

@@ -1,55 +1,34 @@
-import * as React from 'react';
 import { useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { UserContext } from "../context/user";
 import { ProfileContext } from "../context/profile";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import ActionAlerts from './ActionAlerts';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
+import { Avatar,Box, Button, CssBaseline, Grid, Link, Paper, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
+import ActionAlerts from './ActionAlerts';
+import Copyright from './Copyright';
 
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="/">
-        JINDAH
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-function Login({updateContractorProfile}) {
+function Login({ updateContractorProfile }) {
+  // State and other variables
   const { setUser } = useContext(UserContext);
   const { setProfile } = useContext(ProfileContext);
   const [severity, setSeverity] = useState();
   const [alertMessages, setAlertMessages] = useState([]);
   const history = useHistory();
   const theme = createTheme();
-
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
-
   const { email, password } = formData;
 
+  // Handle form change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   }
 
+  // Handles form submit
   function handleSubmit(e){
     e.preventDefault();
 
@@ -58,7 +37,7 @@ function Login({updateContractorProfile}) {
         password: password
     };
     
-    // Logs in user
+    // Logs in user and creates session
     fetch(`/login`,{
       method:'POST',
       headers:{'Content-Type': 'application/json'},
@@ -68,10 +47,10 @@ function Login({updateContractorProfile}) {
         if(res.ok){
             res.json().then(user => {
                 setUser(user);
+                setProfile(user.profile ? user.profile : null);
+                updateContractorProfile(user.contractor_profile ? user.contractor_profile : null);
             })
-            .then(setProfile(user.profile))
-            .then(res => res(updateContractorProfile(user)))
-            .then(history.push(`/dashboard`));
+            .then(user.contractor_profile ? history.push(`/contractor-dashboard`) : history.push(`/dashboard`));
         } else {
             res.json().then(json => {
               setSeverity("error");
@@ -80,7 +59,6 @@ function Login({updateContractorProfile}) {
         }
     })
   };
-
 
   return (
     <ThemeProvider theme={theme}>
