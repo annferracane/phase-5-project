@@ -75,73 +75,78 @@ function AddJobDialog({ property, addJob }) {
   // Handles form submit
   const handleSubmit = (e) => {
       e.preventDefault();
+
+      if(labor_categories.length > 0) {
+        const job = {
+          title: title,
+          description: description,
+          timeline: timeline,
+          is_accepted: false,
+          is_completed: false,
+          property_id: property.id,
+          contractor_profile_id: null
+      };
       
-      const job = {
-        title: title,
-        description: description,
-        timeline: timeline,
-        is_accepted: false,
-        is_completed: false,
-        property_id: property.id,
-        contractor_profile_id: null
-    };
-    
-    fetch(`/properties/${property.id}/jobs`, {
-      method: 'POST', 
-      headers:{'Content-Type': 'application/json'},
-      body:JSON.stringify(job)
-    })
-    .then(res => {
-        if(res.ok){
-            res.json().then(job => {
-              Promise.all(
-                labor_categories.map(labor_category => {
-                  return new Promise((resolve) => {
-
-                    const jobLaborCategory = {
-                      job_id: job.id,
-                      labor_category_id: labor_category.id
-                    };
-
-                    fetch(`/job_labor_categories`, {
-                      method: 'POST', 
-                      headers:{'Content-Type': 'application/json'},
-                      body:JSON.stringify(jobLaborCategory)
-                    })
-                    .then(res => {
-                      if(res.ok){
-                        return new Promise(() => {
-                          res.json().then(labor_category => {
-                            resolve();
+      fetch(`/properties/${property.id}/jobs`, {
+        method: 'POST', 
+        headers:{'Content-Type': 'application/json'},
+        body:JSON.stringify(job)
+      })
+      .then(res => {
+          if(res.ok){
+              res.json().then(job => {
+                Promise.all(
+                  labor_categories.map(labor_category => {
+                    return new Promise((resolve) => {
+  
+                      const jobLaborCategory = {
+                        job_id: job.id,
+                        labor_category_id: labor_category.id
+                      };
+  
+                      fetch(`/job_labor_categories`, {
+                        method: 'POST', 
+                        headers:{'Content-Type': 'application/json'},
+                        body:JSON.stringify(jobLaborCategory)
+                      })
+                      .then(res => {
+                        if(res.ok){
+                          return new Promise(() => {
+                            res.json().then(labor_category => {
+                              resolve();
+                            })
                           })
-                        })
-                      } else {
-                        console.log("Error: job labor categories POST")
-                      }
+                        } else {
+                          console.log("Error: job labor categories POST")
+                        }
+                      })
                     })
                   })
+                )
+                .then(() => {
+                  setFormData({
+                    title: '',
+                    description: '',
+                    timeline: '',
+                    is_accepted: false,
+                    is_completed: false,
+                    labor_categories: []
+                  });
+                  handleClose();
                 })
-              )
-              .then(() => {
-                setFormData({
-                  title: '',
-                  description: '',
-                  timeline: '',
-                  is_accepted: false,
-                  is_completed: false,
-                  labor_categories: []
-                });
-                handleClose();
+                .then(addJob(job))
               })
-              .then(addJob(job))
-            })
-        } else {
-            res.json().then(json => {
-              setSeverity("error");
-              setAlertMessages(Object.entries(json.errors));
-          });
-        }
-     })
+          } else {
+              res.json().then(json => {
+                setSeverity("error");
+                setAlertMessages(Object.entries(json.errors));
+            });
+          }
+       })
+      } else {
+        setSeverity("error");
+        setAlertMessages([[0, "A job requires at least 1 job category."]]);
+      }
     };
   
   // Show loading if laborCategories is null

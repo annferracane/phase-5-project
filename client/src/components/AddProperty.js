@@ -45,6 +45,7 @@ function AddProperty({addPropertyToList}) {
               if(res.ok){
                   res.json().then(data => {
                     // Pulls lat/lng from API
+                    
                     const gLat = data.results[0].geometry.location.lat;
                     const gLng = data.results[0].geometry.location.lng;
 
@@ -78,7 +79,9 @@ function AddProperty({addPropertyToList}) {
                                   property_category: ''
                                 });
                                 addPropertyToList(property);
-                            })
+                            });
+                            setSeverity("success");
+                            setAlertMessages([[0, "Property Saved!"]]);
                         }else {
                             res.json().then(json => {
                               setSeverity("error");
@@ -87,13 +90,18 @@ function AddProperty({addPropertyToList}) {
                         }
                       })
                   })
+                  .catch(googleFetchError => {
+                    console.log(googleFetchError);
+                    setSeverity("error");
+                    setAlertMessages([[0, "Address is not a valid location."]]);
+                });
               } else {
                 res.json().then(json => {
                     setSeverity("error");
                     setAlertMessages([[0, "Address is not a valid location."]]);
                 }); 
               }
-            })
+            });
       };
 
 

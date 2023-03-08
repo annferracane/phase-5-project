@@ -98,6 +98,7 @@ function App() {
 
   // Adds job to job list 
   const addJob = (job) => {
+    console.log(job.is_accepted);
     setJobs([...jobs, job]);
   };
 
@@ -171,9 +172,6 @@ function App() {
             </Route>
             <Route path="/jobs-needed">
               <JobsNeeded jobs={ jobs } deleteJob={ deleteJob } editJob={ editJob } contractorProfile={ contractorProfile } properties={ properties }/>
-            </Route>
-            <Route path="/login">
-              <Login updateContratorProfile={ updateContractorProfile }/>
             </Route>
             <Route path="/my-profile">
               <Profile profile={ profile } updateProfile={ updateProfile } />

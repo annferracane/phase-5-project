@@ -10,7 +10,7 @@ import Copyright from './Copyright';
 
 function Login({ updateContractorProfile }) {
   // State and other variables
-  const { setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const { setProfile } = useContext(ProfileContext);
   const [severity, setSeverity] = useState();
   const [alertMessages, setAlertMessages] = useState([]);
@@ -92,7 +92,7 @@ function Login({ updateContractorProfile }) {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Login
+              { user ? "Logout" : "Login" }
             </Typography>
             <ActionAlerts messages={alertMessages} severity={severity}/>
             <Box component="form" noValidate onSubmit={ handleSubmit } sx={{ mt: 1 }}>

@@ -1,11 +1,14 @@
 
+import { useContext } from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { UserContext } from "../context/user";
 import { Avatar, Box, CssBaseline, Grid, Paper } from '@mui/material';
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import Hero from './Hero';
 
 function Welcome() {
     // Variables
+    const { user } = useContext(UserContext);
     const theme = createTheme();
     const ctaFirst = ['Login','/login'];
     const ctaSecond = ['Sign Up','/signup'];
@@ -41,7 +44,7 @@ function Welcome() {
                         <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
                             <TipsAndUpdatesIcon />
                         </Avatar>
-                        <Hero title="jindah" summary='...where the people are screaming: "these are the jobs I need done at home!"' ctaFirst={ctaFirst} ctaSecond={ctaSecond}/> 
+                        <Hero title="jindah" summary='...where the people are screaming: "these are the jobs I need done at home!"' ctaFirst={ user ? null : ctaFirst } ctaSecond={user ? null : ctaSecond}/> 
                     </Box>
                 </Grid>
             </Grid>

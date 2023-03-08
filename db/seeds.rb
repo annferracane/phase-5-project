@@ -46,10 +46,10 @@ puts "Seeding users and profiles..."
         "first_name" => Faker::Name.first_name_neutral,
         "last_name" => Faker::Name.last_name,
         "image" => Faker::Avatar.image,
-        "password" => Faker::Internet.password
+        "password" => Faker::Internet.password + '12345678'
     }
 
-    fake_user["email"] = (fake_user["last_name"] + "." + fake_user["first_name"] + "@" + Faker::Internet.domain_name).downcase
+    fake_user["email"] = (fake_user["last_name"] + "." + fake_user["first_name"] + "@gmail.com")
     
     user = User.create!(email: fake_user["email"], password: Faker::Internet.password)
 

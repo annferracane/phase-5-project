@@ -36,7 +36,7 @@ function JobItem({ job, jobLaborCategories, addJob, deleteJob, editJob, editJobD
   // Handle accept/release job actions
   const handleAcceptRelease = (e) => {
     const acceptedVal = e.target.value === 'release' ? false : true;
-    const contractor_id = e.target.value === 'release' ? null : contractor_id;
+    const contractor_id = e.target.value === 'release' ? null : contractorProfile.id;
 
     const jobUpdate = {
       is_accepted: acceptedVal,
@@ -50,15 +50,17 @@ function JobItem({ job, jobLaborCategories, addJob, deleteJob, editJob, editJobD
     })
     .then(res => {
         if(res.ok){
-          console.log("success");
-          if(acceptedVal) {
-            setIsAccepted(true); 
-            deleteJob(job.id);
-          } else {
-            setIsAccepted(false);
-            addJob(job);
-            releaseJob(job);
-          }
+          res.json().then(job => { 
+            if(acceptedVal) {
+              setIsAccepted(true); 
+              deleteJob(job.id);
+            } else {
+              setIsAccepted(false);
+              addJob(job);
+              releaseJob(job);
+            }
+          })
+          
         } else {
           res.json().then(json => {
             console.log(json.errors);
@@ -69,16 +71,14 @@ function JobItem({ job, jobLaborCategories, addJob, deleteJob, editJob, editJobD
 
   // Accept button
   const acceptButton = (
-    <Button variant="outlined" color="success" value="accept" startIcon={<PanToolIcon />} onClick={handleAcceptRelease}>
-      Accept
-    </Button>
+    <>
+      { user && user.id === job.job_user_id ? null : <Button variant="outlined" color="success" value="accept" startIcon={<PanToolIcon />} onClick={handleAcceptRelease}> Accept</Button> }
+    </>
   );
 
   // Release Button
   const releaseButton = (
-    <Button variant="outlined" color="warning" value="release" startIcon={<DoNotTouchIcon />} onClick={handleAcceptRelease}>
-      Release
-    </Button>
+    <Button variant="outlined" color="warning" value="release" startIcon={<DoNotTouchIcon />} onClick={handleAcceptRelease}>Release</Button>
   );
 
   // Logic to display correct button based on job's status
@@ -114,6 +114,11 @@ function JobItem({ job, jobLaborCategories, addJob, deleteJob, editJob, editJobD
   const job_timeline_amended = (
     <><b>Needed: </b> {job.timeline}</>
   )
+
+  // Job timeline
+  const job_description_amended = (
+    <><b>Job Description: </b> {job.description}</>
+  )
   
   return (
       <Card sx={{ maxWidth: 700, minHeight: 100 }}>
@@ -125,7 +130,7 @@ function JobItem({ job, jobLaborCategories, addJob, deleteJob, editJob, editJobD
         <CardContent>
         <Stack spacing={3}>
           <Typography variant="body2" color="text.secondary">
-            { job.description }
+            { job_description_amended }
           </Typography>
           <LaborTags laborTags={jobLaborCategories} deleteLaborTag={ null } />
           </Stack>

@@ -59,3 +59,6 @@ gem "active_model_serializers", "~> 0.10.13"
 
 # Faker
 gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'main'
+
+# URL Validator
+gem "validate_url"

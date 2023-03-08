@@ -8,7 +8,7 @@ class User < ApplicationRecord
 
     has_secure_password
     
-    # validates :email, presence: true
-    # validates_format_of :email, with: /\A[\w]([^@\s,;]+)@(([\w-]+\.)+(com|edu|org|net|gov|mil|biz|info))\z/i
-    # validates :password, presence: true, length: { minimum: 8 }
+    validates :email, presence: true, uniqueness: true
+    validates_format_of :email, with: /\A[\w]([^@\s,;]+)@(([\w-]+\.)+(com|edu|org|net|gov|mil|biz|info))\z/i
+    validates :password, presence: true, length: { minimum: 8 }
 end

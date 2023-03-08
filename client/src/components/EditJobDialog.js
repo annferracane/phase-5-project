@@ -76,73 +76,78 @@ function EditJobDialog({ job, editJob, editJobDetailDisplay }) {
   const handleSubmit = (e) => {
       e.preventDefault();
       
-      const jobUpdate = {
-        title: title,
-        description: description,
-        timeline: timeline
-    };
-    
-    fetch(`/jobs/${job.id}`, {
-      method: 'PATCH', 
-      headers:{'Content-Type': 'application/json'},
-      body:JSON.stringify(jobUpdate)
-    })
-    .then(res => { 
-        if(res.ok){ 
-            fetch(`/delete-labor-categories/${job.id}`, {
-                method: 'DELETE',
-                headers:{'Content-Type': 'application/json'}
-            })
-            .then(res => {
-                if(res.ok){
-                    res.json().then(job => {
-                      Promise.all(
-                        labor_categories.map(labor_category => {
-                          return new Promise((resolve) => {
+      if(labor_categories.length > 0){
+        const jobUpdate = {
+          title: title,
+          description: description,
+          timeline: timeline
+        };
         
-                            const jobLaborCategory = {
-                              job_id: job.id,
-                              labor_category_id: labor_category.id
-                            };
-        
-                            fetch(`/job_labor_categories`, {
-                              method: 'POST', 
-                              headers:{'Content-Type': 'application/json'},
-                              body:JSON.stringify(jobLaborCategory)
-                            })
-                            .then(res => {
-                              if(res.ok){
-                                return new Promise(() => {
-                                  res.json().then(labor_category => {
-                                    console.log(labor_category);
-                                    resolve();
-                                  })
+        fetch(`/jobs/${job.id}`, {
+          method: 'PATCH', 
+          headers:{'Content-Type': 'application/json'},
+          body:JSON.stringify(jobUpdate)
+        })
+        .then(res => { 
+            if(res.ok){ 
+                fetch(`/delete-labor-categories/${job.id}`, {
+                    method: 'DELETE',
+                    headers:{'Content-Type': 'application/json'}
+                })
+                .then(res => {
+                    if(res.ok){
+                        res.json().then(job => {
+                          Promise.all(
+                            labor_categories.map(labor_category => {
+                              return new Promise((resolve) => {
+            
+                                const jobLaborCategory = {
+                                  job_id: job.id,
+                                  labor_category_id: labor_category.id
+                                };
+            
+                                fetch(`/job_labor_categories`, {
+                                  method: 'POST', 
+                                  headers:{'Content-Type': 'application/json'},
+                                  body:JSON.stringify(jobLaborCategory)
                                 })
-                              } else {
-                                console.log("Error: job labor categories POST")
-                              }
+                                .then(res => {
+                                  if(res.ok){
+                                    return new Promise(() => {
+                                      res.json().then(labor_category => {
+                                        console.log(labor_category);
+                                        resolve();
+                                      })
+                                    })
+                                  } else {
+                                    console.log("Error: job labor categories POST")
+                                  }
+                                })
+                              })
                             })
+                          )
+                          .then(() => {
+                            console.log("Job labor categories added to job.");
+                            handleClose();
                           })
+                          .then(editJob(job))
+                          .then(editJobDetailDisplay(job, labor_categories))
                         })
-                      )
-                      .then(() => {
-                        console.log("Job labor categories added to job.");
-                        handleClose();
-                      })
-                      .then(editJob(job))
-                      .then(editJobDetailDisplay(job, labor_categories))
-                    })
-                } else {
-                    res.json().then(json => {
-                      setSeverity("error");
-                      setAlertMessages(Object.entries(json.errors));
-                  });
-                }
-            })
-        } else {
-            console.log("Error: job labor categories POST")
-        }
-      })
+                    } else {
+                      console.log("Error: job labor categories POST")      
+                    }
+                })
+            } else {
+              res.json().then(json => {
+                setSeverity("error");
+                setAlertMessages(Object.entries(json.errors));
+            });
+            }
+          });
+      } else {
+        setSeverity("error");
+        setAlertMessages([[0, "A job requires at least 1 job category."]]);
+      };
     };
   
   // Show loading if jobs is null

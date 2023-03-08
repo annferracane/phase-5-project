@@ -79,70 +79,76 @@ function AddContractorProfile({ updateContractorProfile }) {
   // Handles form submit
   const handleSubmit = (e) => {
       e.preventDefault();
+
+      if(labor_categories.length > 0) {
+        const contractorProfile = {
+          zip: zip,
+          travel_radius_miles: travel_radius_miles,
+          user_id: user.id
+         };
       
-      const contractorProfile = {
-        zip: zip,
-        travel_radius_miles: travel_radius_miles,
-        user_id: user.id
-    };
-    
-    fetch(`/contractor-profile`, {
-      method: 'POST', 
-      headers:{'Content-Type': 'application/json'},
-      body:JSON.stringify(contractorProfile)
-    })
-    .then(res => {
-        if(res.ok){
-            res.json().then(user => {
-              Promise.all(
-                labor_categories.map(labor_category => {
-                  return new Promise((resolve) => {
-
-                    const contractorSpecialty = {
-                        contractor_profile_id: user.contractor_profile.id,
-                        labor_category_id: labor_category.id
-                    };
-
-                    fetch(`/contractor_specialties`, {
-                      method: 'POST', 
-                      headers:{'Content-Type': 'application/json'},
-                      body:JSON.stringify(contractorSpecialty)
-                    })
-                    .then(res => {
-                      if(res.ok){
-                        return new Promise(() => {
-                          res.json().then(labor_category => {
-                            resolve();
+      fetch(`/contractor-profile`, {
+        method: 'POST', 
+        headers:{'Content-Type': 'application/json'},
+        body:JSON.stringify(contractorProfile)
+      })
+      .then(res => {
+          if(res.ok){
+              res.json().then(user => {
+                Promise.all(
+                  labor_categories.map(labor_category => {
+                    return new Promise((resolve) => {
+  
+                      const contractorSpecialty = {
+                          contractor_profile_id: user.contractor_profile.id,
+                          labor_category_id: labor_category.id
+                      };
+  
+                      fetch(`/contractor_specialties`, {
+                        method: 'POST', 
+                        headers:{'Content-Type': 'application/json'},
+                        body:JSON.stringify(contractorSpecialty)
+                      })
+                      .then(res => {
+                        if(res.ok){
+                          return new Promise(() => {
+                            res.json().then(labor_category => {
+                              resolve();
+                            })
                           })
-                        })
-                      } else {
-                        console.log("Error: contractor speciality categories POST")
-                      }
-
+                        } else {
+                          console.log("Error: contractor speciality categories POST")
+                        }
+  
+                      })
                     })
                   })
+                )
+                .then(() => {
+                  setFormData({
+                    zip: '',
+                    travel_radius_miles: '',
+                    labor_categories: []
+                  });
                 })
-              )
-              .then(() => {
-                console.log("Contractor specialities added to contractor profile.");
-
-                setFormData({
-                  zip: '',
-                  travel_radius_miles: '',
-                  labor_categories: []
-                });
+                .then(updateContractorProfile(user))
+                .then(handleClose())
+                .then(history.push(`/jobs-needed`))
               })
-              .then(updateContractorProfile(user))
-              .then(handleClose())
-              .then(history.push(`/jobs-needed`))
-            })
-        } else {
-            res.json().then(json => {
-              setSeverity("error");
-              setAlertMessages(Object.entries(json.errors));
-          });
-        }
-      })
+          } else {
+              res.json().then(json => {
+                setSeverity("error");
+                setAlertMessages(Object.entries(json.errors));
+            });
+          }
+        });
+
+      } else {
+        setSeverity("error");
+        setAlertMessages([[0, "Contractors require at least 1 specialty."]]);
+      }
+      
+      
     };
   
   // Show loading if laborCategories is null

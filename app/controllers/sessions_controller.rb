@@ -23,6 +23,7 @@ class SessionsController < ApplicationController
         user.password = SecureRandom.hex(15)
         if user.save
             session[:user_id] = user.id
+
             render json: user, status: :ok
         else
             render json: {errors: "Invalid login"}, status: :unauthorized
