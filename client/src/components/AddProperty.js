@@ -38,7 +38,7 @@ function AddProperty({addPropertyToList}) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const search_addr = street_address_1 + ', ' + city + ', ' + state_abbr + ' ' + zip; 
+        const search_addr = street_address_1 + ', ' + city + ', ' + state_abbr + ' ' + zip;
         // Fetches Google Places API to convert address into lat/lng for later map usage
         fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${search_addr}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`)
           .then(res => {

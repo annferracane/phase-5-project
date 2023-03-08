@@ -1,4 +1,5 @@
 class PropertiesController < ApplicationController
+    skip_before_action :authorized_user, only: [:index ]
 
     def index
         if params[:user_id]

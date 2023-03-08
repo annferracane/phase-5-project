@@ -11,7 +11,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 function Navigation({ contractorProfile, updateContractorProfile }) {
   // State and other variables
   const { user, setUser } = useContext(UserContext);
-  const { profile } = useContext(ProfileContext);
+  const { profile, setProfile } = useContext(ProfileContext);
   const history = useHistory();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -76,6 +76,7 @@ function Navigation({ contractorProfile, updateContractorProfile }) {
     .then(res =>{
       if(res.ok) {
         setUser(null);
+        setProfile(null);
       }
     })
     .then(history.push('/login'));
