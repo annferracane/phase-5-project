@@ -113,7 +113,7 @@ user_groups.map { | user_group |
             street_address_2: [nil, Faker::Address.secondary_address].sample,
             city: Faker::Address.city,
             state: Faker::Address.state_abbr,
-            zip: Faker::Address.zip,
+            zip: Faker::Address.zip_code.first(5),
             lat: Faker::Address.latitude, 
             lng: Faker::Address.longitude,
             country: 'United States',
