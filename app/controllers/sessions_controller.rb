@@ -17,6 +17,7 @@ class SessionsController < ApplicationController
     end 
 
     def omniauth
+        puts "reaching omniauth"
         user = User.find_or_create_by(uid: request.env['omniauth.auth'][:uid], provider: request.env['omniauth.auth'][:provider])
         user.email = request.env['omniauth.auth'][:info][:email]
         user.password = SecureRandom.hex(15)
