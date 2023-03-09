@@ -10,7 +10,7 @@ function JobsNeeded({ jobs, addJob, deleteJob, editJob, contractorProfile, prope
     const { user } = useContext(UserContext);
     const ctaFirst = ['Login to See More','/login'];
     const ctaSecond = ['Add a Job','/dashboard'];
-    const map = (<Map properties={ properties } />);
+    const map = (<Map jobs={ jobs } properties={ properties } />);
     
     // Show loading if jobs is null
    if(!jobs || !map ) { return <h2>Loading...</h2> }

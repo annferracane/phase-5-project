@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import MapMarkerDialog from './MapMarkerDialog';
 
-function Map({ properties }) {
+function Map({ properties, jobs }) {
     // Map container
     const containerStyle = {
         width: '850px',
@@ -63,7 +63,7 @@ function Map({ properties }) {
                 
             </GoogleMap>
         )
-    }, [propertyLocationArray]);
+    }, [ propertyLocationArray, center]);
 
     if(!properties) return (<h2>Loading...</h2>)
 
