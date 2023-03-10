@@ -32,12 +32,12 @@ Backend
 
 Frontend
 
-[x] Auth
-[ ] Tests
-[x] Interacting with a complex API (Google Maps API and Google Places API)
-[ ] Redux
-[x] Custom CSS
-[x] One significant refactor
+- [x] Auth
+- [ ] Tests
+- [x] Interacting with a complex API (Google Maps API and Google Places API)
+- [ ] Redux
+- [x] Custom CSS
+- [x] One significant refactor
 
 ## Suggested Info
 

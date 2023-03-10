@@ -83,7 +83,7 @@ function SignUp() {
             Sign up
           </Typography>
           <ActionAlerts messages={alertMessages} severity={severity}/>
-          <Box sx={{ mt: 3, marginBotton: 8 }}>
+          {/* <Box sx={{ mt: 3, marginBotton: 8 }}>
             <Button
                 component={Link}
                 startIcon={<GoogleIcon />} 
@@ -96,7 +96,7 @@ function SignUp() {
           <Box sx={{ mt: 3 }}></Box>
           <Divider style={{width:'100%'}}>
             <Chip label="Or" />
-          </Divider>
+          </Divider> */}
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, alignItems: 'center' }} >
             <Grid container spacing={2}>
               <Grid item xs={12}>
